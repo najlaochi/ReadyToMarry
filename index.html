@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Ready to Marry: a research-backed pre-marriage readiness game for Muslim couples, in English and Arabic.">
+<meta name="description" content="Ready to Marry: research-backed Muslim marriage preparation, in English and Arabic.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23a3701c' d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E">
 <style>html{color-scheme:light}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Ready to Marry</title>
@@ -214,7 +214,7 @@ ul.books{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;g
 </head>
 <body>
 <header class="bar"><div class="wrap">
-  <div class="brand"><div class="star8" aria-hidden="true"></div><div><b id="brandName">Ready to Marry</b><small id="who">Pre-marriage readiness game</small></div></div>
+  <div class="brand"><div class="star8" aria-hidden="true"></div><div><b id="brandName">Ready to Marry</b><small id="who">Muslim marriage preparation</small></div></div>
   <div class="stats" id="stats"></div>
 </div></header>
 <main class="wrap" id="app"></main>
@@ -1321,7 +1321,7 @@ SCI_EN.splice(17,0,['Ease over show',"A study of about 3,000 US married adults (
 SCI_AR.splice(17,0,['اليسر لا المظاهر','وجدت دراسة شملت نحو 3,000 متزوج في أمريكا (فرانسيس-تان وميالون، 2015) أن حفلات الزفاف الباهظة جداً ارتبطت بخطر أعلى للطلاق، بينما ارتبط كثرة الحضور بخطر أقل. وقال النبي ﷺ: «أعظم النكاح بركة أيسره مؤونة» (رواه أحمد). أنفقا على الناس وعلى بداية مستقرة، لا على المظاهر.','فرانسيس-تان وميالون، 2015؛ المرسوم بقانون اتحادي رقم 41 لسنة 2024']);
 
 const T = {
- en:{dir:'ltr',brand:'Ready to Marry',sub:'Pre-marriage readiness game',langBtn:'العربية',langName:'English',
+ en:{dir:'ltr',brand:'Ready to Marry',sub:'Muslim marriage preparation',langBtn:'العربية',langName:'English',
   role:{husband:'Husband',wife:'Wife'},trackOf:r=>`${r} track`,
   statWorlds:(d,n)=>`${d}/${n} modules`,statIdx:'Index',
   chooseLang:'Language',
@@ -1387,7 +1387,7 @@ const T = {
   cCert:'This certifies that',cDone:(n,t)=>`has completed ${n} modules and the First Year Simulator`,cPill:(t,i)=>`${t}  ·  Readiness Index ${i}`,
   cTopS:'TOP STRENGTHS',cGrow:'AREAS TO GROW',cFoot:'Ready to Marry · pre-marriage readiness game',locale:'en-GB'},
 
- ar:{dir:'rtl',brand:'جاهزون للزواج',sub:'لعبة الاستعداد قبل الزواج',langBtn:'English',langName:'العربية',
+ ar:{dir:'rtl',brand:'جاهزون للزواج',sub:'التأهيل للزواج بالمودّة والرحمة',langBtn:'English',langName:'العربية',
   role:{husband:'الزوج',wife:'الزوجة'},trackOf:r=>`مسار ${r}`,
   statWorlds:(d,n)=>`${d}/${n} وحدات`,statIdx:'المؤشر',
   chooseLang:'اللغة',

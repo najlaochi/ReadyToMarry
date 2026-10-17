@@ -1,0 +1,1335 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Ready to Marry: a pre-marriage readiness game for Muslim couples, in English and Arabic.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23a3701c' d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E">
+<style>html{color-scheme:light}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Ready to Marry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Figtree:wght@400;500;600;700&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a single-column "journey" app — sticky header with score, map of modules as tiles, focused stage card for play */
+:root{
+  --bg:#eef1ee; --surface:#fbfcfa; --sunk:#e3e8e3; --ink:#18213a; --muted:#566077; --line:#d3d9d2;
+  --lapis:#27408b; --lapis-soft:#dfe5f4; --brass:#a3701c; --brass-soft:#f3e7cf;
+  --good:#2b7a52; --good-soft:#dcefe4; --warn:#a85f16; --bad:#a23a3a; --bad-soft:#f5e0de;
+  --display:"Marcellus", Georgia, "Times New Roman", serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --arabic:"Amiri", "Traditional Arabic", serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10151f; --surface:#182030; --sunk:#131a27; --ink:#e7eaf1; --muted:#9ba5b9; --line:#2b3549;
+  --lapis:#93a9ee; --lapis-soft:#22305a; --brass:#dcaa4f; --brass-soft:#3b3020;
+  --good:#6cc596; --good-soft:#1c3a2b; --warn:#e2a35a; --bad:#e58a84; --bad-soft:#40211f; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#10151f; --surface:#182030; --sunk:#131a27; --ink:#e7eaf1; --muted:#9ba5b9; --line:#2b3549;
+  --lapis:#93a9ee; --lapis-soft:#22305a; --brass:#dcaa4f; --brass-soft:#3b3020;
+  --good:#6cc596; --good-soft:#1c3a2b; --warn:#e2a35a; --bad:#e58a84; --bad-soft:#40211f; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.bar .wrap{display:flex;align-items:center;gap:12px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;margin-inline-end:auto;min-width:0}
+.star8{width:30px;height:30px;flex:none;background:var(--brass);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat}
+.brand b{font-family:var(--display);font-weight:400;font-size:1.2rem}
+.brand small{display:block;color:var(--muted);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--sunk);font-size:.85rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip.brass{background:var(--brass-soft);color:var(--brass);font-weight:600}
+.chip.lapis{background:var(--lapis-soft);color:var(--lapis);font-weight:600}
+
+main{padding-block:24px 64px}
+.stack{display:flex;flex-direction:column;gap:20px}
+.lead{color:var(--muted);max-width:62ch;margin:0}
+.eyebrow{font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);font-weight:600}
+
+/* onboarding */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.hero{display:grid;gap:14px}
+.hero h1{font-size:clamp(1.9rem,5vw,2.6rem)}
+.ar{font-family:var(--arabic);color:var(--brass);font-size:1.35rem;direction:rtl}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:.92rem}
+input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.track{text-align:start;padding:14px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--bg);display:flex;flex-direction:column;gap:2px}
+.track b{font-family:var(--display);font-weight:400;font-size:1.15rem}
+.track span{color:var(--muted);font-size:.85rem}
+.track[aria-pressed=true]{border-color:var(--lapis);background:var(--lapis-soft)}
+.btn{border:0;border-radius:8px;padding:11px 18px;font-weight:600;background:var(--lapis);color:var(--surface)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--lapis);border:1.5px solid var(--lapis)}
+.btn.brass{background:var(--brass);color:var(--surface)}
+.btn.quiet{background:transparent;color:var(--muted);padding:8px 10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* map */
+.sectionhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sectionhead h2{font-size:1.5rem}
+.progress{height:8px;border-radius:999px;background:var(--sunk);overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--lapis),var(--brass));border-radius:999px;transition:width .6s}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.world{text-align:start;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);transition:transform .15s,border-color .15s}
+.world:hover:not(:disabled){transform:translateY(-2px);border-color:var(--lapis)}
+.world:disabled{opacity:.5;cursor:not-allowed}
+.world .num{grid-row:span 3;font-family:var(--arabic);font-size:1.6rem;color:var(--brass);width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:var(--brass-soft);line-height:1}
+.world h3{font-size:1.08rem}
+.world .prob{color:var(--muted);font-size:.84rem}
+.world .meta{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;font-variant-numeric:tabular-nums}
+.stars{letter-spacing:2px;color:var(--line);font-size:1rem}
+.stars .on{color:var(--brass)}
+.tag{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em}
+.tag.next{background:var(--lapis-soft);color:var(--lapis)}
+.tag.pass{background:var(--good-soft);color:var(--good)}
+.tag.retry{background:var(--bad-soft);color:var(--bad)}
+.tag.lock{background:var(--sunk);color:var(--muted)}
+.finale{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.finale .world .num{font-family:var(--display);font-size:1.1rem}
+
+/* stage */
+.stagehead{display:flex;flex-direction:column;gap:10px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.steps div{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-top:3px solid var(--sunk);padding-top:6px}
+.steps div.done{border-color:var(--good);color:var(--good)}
+.steps div.now{border-color:var(--lapis);color:var(--lapis);font-weight:700}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px}
+.card h3{font-size:1.25rem}
+.q{font-size:1.06rem;font-weight:600}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale button{padding:9px 4px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);font-size:.82rem}
+.scale button[aria-pressed=true]{border-color:var(--lapis);background:var(--lapis-soft);color:var(--lapis);font-weight:700}
+.mirror-item{display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.mirror-item:last-child{border-bottom:0;padding-bottom:0}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:start;padding:12px 14px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.opt:hover:not(:disabled){border-color:var(--lapis)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.mid{border-color:var(--warn)}
+.opt .pts{font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.explain{padding:12px 14px;border-inline-start:3px solid var(--brass);background:var(--brass-soft);border-radius:8px;font-size:.95rem}
+.explain b{color:var(--brass)}
+.scenario{font-family:var(--display);font-size:1.25rem;line-height:1.35}
+.speaker{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mission{display:flex;flex-direction:column;gap:10px}
+.trackline{padding:10px 12px;border-radius:8px;background:var(--lapis-soft);color:var(--lapis);font-size:.94rem}
+.counter{font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* result */
+.result{text-align:center;align-items:center}
+.bigscore{font-family:var(--display);font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.bigstars{font-size:2.2rem;letter-spacing:6px;color:var(--line)}
+.bigstars .on{color:var(--brass);display:inline-block;animation:pop .5s both}
+.bigstars .on:nth-child(2){animation-delay:.15s}.bigstars .on:nth-child(3){animation-delay:.3s}
+@keyframes pop{0%{transform:scale(.3);opacity:.2}70%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
+table.break{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;text-align:start}
+table.break td{padding:8px 4px;border-bottom:1px solid var(--line)}
+table.break td:last-child{text-align:end;font-weight:600}
+
+/* certificate */
+.cert{position:relative;border:2px solid var(--brass);border-radius:14px;padding:28px 22px;background:var(--surface);text-align:center;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.cert::before{content:"";position:absolute;inset:8px;border:1px solid var(--brass);border-radius:9px;opacity:.5;pointer-events:none}
+.cert h2{font-size:clamp(1.6rem,5vw,2.3rem)}
+.cert .name{font-family:var(--display);font-size:1.6rem;color:var(--lapis)}
+.tier{display:inline-block;align-self:center;padding:6px 16px;border-radius:999px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem}
+.tier.gold{background:var(--brass-soft);color:var(--brass)}
+.tier.silver{background:var(--lapis-soft);color:var(--lapis)}
+.tier.almost{background:var(--sunk);color:var(--muted)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:start}
+.cols ul{margin:6px 0 0;padding-inline-start:18px}
+ol.plan{margin:0;padding-inline-start:20px}
+.langpick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.langpick .track{align-items:center;text-align:center;padding:10px}
+.langbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:600;color:var(--lapis)}
+.langbtn[lang=ar]{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif}
+.langbtn[lang=en]{font-family:var(--body)}
+.langbtn.out{color:var(--muted)}
+:root[dir=rtl]{--display:"Amiri","Traditional Arabic",serif;--body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif}
+:root[dir=rtl] h1,:root[dir=rtl] h2,:root[dir=rtl] h3,:root[dir=rtl] .brand b,:root[dir=rtl] .scenario,:root[dir=rtl] .cert .name{font-weight:700}
+:root[dir=rtl] .eyebrow,:root[dir=rtl] .tag,:root[dir=rtl] .steps div,:root[dir=rtl] .speaker,:root[dir=rtl] .brand small,:root[dir=rtl] .tier{letter-spacing:0;text-transform:none}
+:root[dir=rtl] .progress i{background:linear-gradient(270deg,var(--lapis),var(--brass))}
+:root[dir=rtl] body{line-height:1.75}
+.note{font-size:.85rem;color:var(--muted)}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+
+@media (max-width:560px){
+  .tracks,.finale,.cols{grid-template-columns:1fr}
+  .langbtn{padding:4px 10px}
+  .scale button{font-size:.7rem;padding:8px 2px}
+  .bigscore{font-size:2.8rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <div class="brand"><div class="star8" aria-hidden="true"></div><div><b id="brandName">Ready to Marry</b><small id="who">Pre-marriage readiness game</small></div></div>
+  <div class="stats" id="stats"></div>
+</div></header>
+<main class="wrap" id="app"></main>
+
+<script>
+const AR = ['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١','١٢','١٣','١٤'];
+
+const WORLDS_EN = [
+ {name:'Clean & Fresh', prob:'Hygiene and order',
+  mirror:[['I leave the bathroom clean and dry after I use it.',5],['I leave used tissues, cups or clothes where I used them.',1],['I brush my teeth before bed every night.',5]],
+  learn:[
+   {q:'After using the toilet, the right habit is:',o:['Leave it for the cleaner','Flush, wipe the seat and floor, lid down, wash hands, towel back in place','Just flush'],a:1,e:'Leave every place as clean as you found it, or cleaner. The next person to use it is the one you love.'},
+   {q:'The Prophet ﷺ said that purity (at-tahur) is:',o:['Optional','Half of faith','Only for prayer'],a:1,e:'"Purity is half of faith" (Sahih Muslim). Cleanliness at home is part of your deen, not only your manners.'},
+   {q:'Before sleeping, the best habit is:',o:['Go straight to bed','Brush your teeth or use miswak, make wudu, and sleep in a clean, fresh bed','A late snack in bed'],a:1,e:'The Prophet ﷺ used the miswak when he woke at night. Fresh breath and a clean bed make the bedroom a place of comfort.'}],
+  play:[
+   {who:'Morning rush',s:'You are late. The sink has toothpaste and hair in it, and the towel is on the floor.',o:[['Leave it, there is no time.',0],['Leave it and promise to clean later.',4],['Take 60 seconds: rinse the sink and hang the towel.',15]],e:'The one-minute rule: if it takes less than a minute, do it now.'},
+   {who:'Bedtime',s:'The bedroom has clothes on the chair, tissues by the bed, and a stuffy smell.',o:[['Sleep, it is fine.',0],['Spray perfume over the mess.',5],['5-minute reset: clothes away, tissues in the bin, window open, fresh scent, teeth brushed.',15]],e:'A tidy, fresh bedroom invites closeness. A messy one pushes it away.'}],
+  mission:'Pick one 7-day clean-and-fresh challenge:',
+  missionOpts:['Leave the bathroom spotless after every use.','Brush your teeth (or use miswak) every night before bed.','Do a 5-minute bedroom reset each evening: tidy, bin, fresh air, good scent.','Leave no trail: no tissues, cups or clothes left behind anywhere.','Smile at your family every morning: "your smile is charity".'],
+  hus:'Seat and lid down, floor dry, and beard hair cleaned from the sink.', wif:'Hair cleaned from the drain and sink, products put back, and a fresh bedroom.'},
+
+ {name:'Good Character', prob:'Morals and manners',
+  mirrorH:[['I raise my voice or shout when I am angry.',1],['I give gifts only on special occasions.',1],['I would talk openly with my wife about a problem before ever thinking of a second wife.',5]],
+  mirrorW:[['I raise my voice when I am upset.',1],['I talk about other people when they are not there.',1],['I thank people for the small things they do for me.',5]],
+  learnH:[
+   {q:'The Prophet ﷺ said the best of you are:',o:['The richest','Those who are best to their families','The strongest'],a:1,e:'"The best of you are those best to their families, and I am the best of you to my family" (at-Tirmidhi).'},
+   {q:'Your wife\'s salary, mahr, gold and property are:',o:['Family money','Hers alone; you may use them only with her free consent','Yours to manage'],a:1,e:'The Quran gives the wife full ownership of her mahr and wealth (4:4). Taking it without her consent is wrong.'},
+   {q:'Allah says "Do not come near zina" (17:32). This means:',o:['Only the act itself is forbidden','Secret chats, flirting, and anything that leads to it must be avoided too','It is fine if no one knows'],a:1,e:'Zina is one of the major sins. The Quran forbids even coming near it, so the path must be closed early.'}],
+  learnW:[
+   {q:'Talking about someone behind their back in a way they would dislike is:',o:['Harmless chat','Gheeba (backbiting), which the Quran forbids','Fine if it is true'],a:1,e:'Even when it is true, it is gheeba (Quran 49:12). If it is false, it is worse: slander. Speak good or stay silent.'},
+   {q:'A wife wins her in-laws\' hearts by:',o:['Keeping her distance from them','Respect, warm greetings, small gifts, and never complaining about them in anger','Competing with them'],a:1,e:'Respect for his family is respect for him. Real problems are raised calmly and privately.'},
+   {q:'"Whoever does not thank people does not thank Allah" means:',o:['Gratitude is only for Allah','Thanking your husband and family is part of your faith','Thanks are only for big things'],a:1,e:'Narrated by Abu Dawud and at-Tirmidhi. A simple "Allah ya\'tik al-afia" for his effort builds a lot.'}],
+  playH:[
+   {who:'Something bothers you',s:'A habit of your wife keeps bothering you, and a friend jokes: "Just take a second wife."',o:[['Start thinking about it seriously.',0],['Say nothing and grow distant.',3],['Tell her kindly and clearly what bothers you, ask what you can do, and help her fix it.',15]],e:'"Let no believing man hate a believing woman: if he dislikes one trait in her, he is pleased with another" (Muslim). Talk and fix before you look elsewhere.'},
+   {who:'She is upset',s:'Your wife is angry because you came home late without calling, for the third time.',o:[['"You are always complaining!"',0],['Apologise but change nothing.',5],['Apologise, find out exactly what upsets her, and fix it: a call or a text every time.',15]],e:'Fix the cause of her anger, not only the moment.'}],
+  playW:[
+   {who:'A family gathering',s:'Your cousin starts gossiping about a relative\'s marriage problems.',o:[['Join in with details you know.',0],['Listen quietly.',5],['Change the subject kindly: "May Allah make it easy for them. How is your new job?"',15]],e:'Ending gossip politely protects others and your own good name.'},
+   {who:'His mother',s:'Your mother-in-law visits and rearranges things in your kitchen.',o:[['Complain to your husband angrily that night.',0],['Say nothing and resent it.',5],['Welcome her warmly, then later tell your husband calmly what you prefer.',15]],e:'Respect in front of her, honesty in private: that keeps both relationships healthy.'}],
+  mission:'Pick one 7-day character challenge:',
+  missionOptsH:['Go a full week without shouting once.','Give a small gift for no reason: flowers, sweets, or her favourite coffee.','Thank your mother, sister, or future wife for 3 things every day.','Ask "What upsets you that I can fix?" and fix one thing this week, even if it means buying what is needed.','Delete or mute any chat that would fail the "would my wife be comfortable?" test.'],
+  missionOptsW:['Go a full week without raising your voice once.','A week with zero gossip: change the subject every time it starts.','Thank your family for 3 things every day.','Do one kind act for your future in-laws: a call, a dish, or a small gift.','Start each day with one positive word.'],
+  hus:'Kind words, no shouting, gifts, help at home, her money is hers, and total fidelity.', wif:'A calm voice, a clean tongue, warm respect for his family, and gratitude for his effort.'},
+
+ {name:'The Listening Castle', prob:'Weak communication',
+  mirror:[['When my partner complains, I interrupt to defend myself.',1],['I can repeat back what someone said before I reply.',5],['When I am upset, I raise my voice.',1]],
+  learn:[
+   {q:'What does the LRV method stand for?',o:['Listen, Reply, Verify','Listen, Repeat, Validate','Look, Respond, Value'],a:1,e:'Listen without interrupting, Repeat what you heard, Validate the feeling. Only then reply.'},
+   {q:'Which sentence is a soft start-up?',o:['"You never help me!"','"Why am I always the one doing everything?"','"I\'m exhausted tonight. Could you take the dishes?"'],a:2,e:'A soft start-up names your feeling and a specific request. It invites help instead of defense.'},
+   {q:'Validating your partner means:',o:['Agreeing with everything they say','Showing their feeling makes sense, even if you see it differently','Staying silent until they calm down'],a:1,e:'You can disagree with the facts and still say "I understand why you feel that way."'}],
+  play:[
+   {who:'Your spouse',s:'"You came home late again and didn\'t call!"',o:[['"I was working for us!"',0],['"Sorry."',8],['"You were worried because I didn\'t call. You\'re right, I\'ll text next time."',15]],e:'Repeat + validate + a concrete fix ends the fight in one sentence.'},
+   {who:'Your spouse',s:'"You\'re always on your phone when I talk to you."',o:[['"So are you!"',0],['"Okay, fine."',5],['Put the phone down: "You feel ignored. Tell me, I\'m listening now."',15]],e:'Action first (phone down), then name their feeling.'}],
+  mission:'Pick one 2-minute listening challenge to try today:',
+  missionOpts:['Ask someone "How was your day?" and just listen, no advice.','Repeat back one thing a friend says before you reply.','When someone complains today, answer: "That makes sense."','Put your phone face-down for one full conversation.'],
+  hus:'Practise not "fixing" too fast: listen fully before giving solutions.', wif:'Practise saying the need directly instead of hoping it is guessed.'},
+
+ {name:'Mask Off', prob:'The courtship mask',
+  mirror:[['My family would describe me exactly as I describe myself.',5],['I behave differently when I want to impress someone.',1],['I can name my 3 worst habits.',5]],
+  learn:[
+   {q:'In Saudi Arabia, over 65% of 2025 divorces happened in year one. A major reason is:',o:['Bad luck','Idealized behaviour during courtship that collapses after marriage','Only in-law problems'],a:1,e:'People show their best side during engagement. Reality arrives with the first tired, hungry, stressed week.'},
+   {q:'A personal "User Manual" should include:',o:['Only my strengths','My triggers, bad habits, and what calms me down','My salary slip'],a:1,e:'Your partner can only help with what they know about.'},
+   {q:'The best time to reveal a bad habit is:',o:['After the wedding','Before the engagement is final','Never'],a:1,e:'Disclosure before commitment is honesty. After the wedding it feels like deception.'}],
+  play:[
+   {who:'Your fiancé(e)',s:'"What are you like when you\'re angry?"',o:[['"I never get angry."',0],['"It depends."',5],['"I go quiet for an hour and need space. Then I\'m ready to talk."',15]],e:'A specific, honest answer gives your partner a map.'},
+   {who:'After a long workday',s:'You are tired and hungry. Your partner asks you a question about weekend plans.',o:[['Snap: "Not now!"',0],['Ignore it and scroll your phone.',3],['"I need 15 minutes to reset, then I\'m all yours."',15]],e:'Naming your state protects your partner from your worst side.'}],
+  mission:'Ask 2 family members: "What is my worst habit?" Compare their answers with your own view of yourself.',
+  hus:'Ask your mother or sister too. They often see what you miss.', wif:'Ask your father or brother too. They often see what you miss.'},
+
+ {name:'The Right Choice', prob:'Choosing the wrong partner',
+  mirror:[['I know my non-negotiables in a spouse.',5],['Looks or status matter more to me than character.',1],['I have seen my future spouse under real stress.',5]],
+  learn:[
+   {q:'Istishara means:',o:['Consulting wise people before deciding','A type of prayer','The marriage contract'],a:0,e:'Istikhara asks Allah for guidance; istishara asks wise people for advice. Use both.'},
+   {q:'Which is the strongest warning sign?',o:['Different hobbies','Disrespect to waiters, drivers, or their own mother','A different taste in food'],a:1,e:'How someone treats people with less power predicts how they will treat you once you are "theirs".'},
+   {q:'The best way to know someone\'s character:',o:['Their social media','Seeing them under stress, with money, and with family','One long dinner date'],a:1,e:'Character shows in pressure, generosity, and family behaviour, not in a planned meeting.'}],
+  play:[
+   {who:'A meeting',s:'He is charming and generous with you, but insults the waiter twice.',o:[['Ignore it. He is nice to me.',0],['Tell everyone what happened.',3],['Note it as a red flag and observe more before deciding.',15]],e:'One sign is data, not a verdict. Keep watching how he treats others.'},
+   {who:'Your family',s:'Your family pushes a candidate who doesn\'t share your non-negotiables.',o:[['Accept to please them.',0],['Refuse rudely.',4],['Respectfully explain your 5 non-negotiables and ask for time.',15]],e:'Clear values let you say no with respect.'}],
+  mission:'Write one page: "My ideal spouse" on the left, "My non-negotiables" on the right.',
+  hus:'Include what kind of wife you can truly support: working, studying, at home.', wif:'Include what kind of husband you can respect long term, beyond income.'},
+
+ {name:'Digital Shield', prob:'Phones, social media, infidelity',
+  mirror:[['I would be comfortable if my spouse read my chats.',5],['I use my phone during meals.',1],['I compare my life with couples on Instagram.',1]],
+  learn:[
+   {q:'The "Would my spouse be comfortable?" test applies:',o:['Only to romantic messages','Before sending any message to the opposite sex','Never, privacy is absolute'],a:1,e:'Most affairs start as "harmless" chats. The test catches them early.'},
+   {q:'The two best phone-free zones are:',o:['Bathroom and car','Meals and the bedroom','Office and gym'],a:1,e:'Meals and bedtime are your main connection time.'},
+   {q:'"Perfect couple" posts online are:',o:['Real life','Curated highlights','Goals to copy'],a:1,e:'Comparing your real life with someone\'s highlights creates false disappointment.'}],
+  play:[
+   {who:'A colleague, 00:12',s:'"Good night 😊" from a colleague of the opposite sex.',o:[['Reply warmly.',0],['Delete it secretly.',4],['Don\'t reply, keep work talk to work hours, and mention it to your spouse.',15]],e:'Transparency removes the secret before it can grow.'},
+   {who:'Your spouse',s:'"Can I see that chat?"',o:[['Refuse angrily.',0],['Show it, but sulk all evening.',7],['Show it calmly.',15]],e:'Calm openness builds more trust than any password.'}],
+  mission:'Track your screen time for 3 days, then cut 30 minutes a day.',
+  hus:'Mute group chats after 10pm.', wif:'Mute group chats after 10pm.'},
+
+ {name:'The Treasury', prob:'Money and job loss',
+  mirror:[['I know exactly what I owe (loans, cards).',5],['I would hide a debt from my fiancé(e).',1],['I have savings for emergencies.',5]],
+  learn:[
+   {q:'In Islam, a working wife\'s salary:',o:['Belongs to the household','Is her own; any contribution is voluntary','Goes to her husband'],a:1,e:'Nafaqah stays the husband\'s duty. Her contribution is a gift or an agreed loan.'},
+   {q:'A healthy emergency fund covers:',o:['One week','About 6 months of expenses','Nothing, trust Allah only'],a:1,e:'Tie your camel: in the UAE a job loss can also affect the visa.'},
+   {q:'The best way to handle a wife\'s money contribution:',o:['No need to discuss it','Write it down as a gift or a loan','Tell both families'],a:1,e:'Writing it down prevents resentment and disputes later.'}],
+  play:[
+   {who:'A hard week',s:'The husband loses his job.',o:[['He hides it and pretends to go to work.',0],['The wife pays everything, with no time limit.',3],['He tells his wife the same day and they agree a plan with deadlines.',15]],e:'Honesty + a time-boxed plan protects both dignity and the marriage.'},
+   {who:'Before the wedding',s:'Families want a big wedding. You have limited savings.',o:[['Take a loan for the big wedding.',2],['Cancel any celebration against everyone\'s wishes.',7],['A realistic wedding and mahr within your savings.',15]],e:'Starting in debt is one of the fastest routes to early conflict.'}],
+  mission:'Build your real personal monthly budget: income, fixed costs, family support, savings.',
+  hus:'Add a written job-loss plan: steps and deadlines.', wif:'Decide which part of your income stays as your own savings.'},
+
+ {name:'The Throne Room', prob:'Ego and role reversal',
+  mirror:[['I would feel uncomfortable if my spouse earned much more than me.',1],['Big decisions should be made together.',5],['I have used money as a weapon in an argument.',1]],
+  learn:[
+   {q:'Shura means:',o:['Mutual consultation','The husband decides','The richer spouse decides'],a:0,e:'Shura is a Quranic principle: decide together.'},
+   {q:'When the wife earns more, big decisions are made by:',o:['Her','Him','Both, through shura'],a:2,e:'Decisions follow consultation, never salary.'},
+   {q:'A husband\'s worth lies in:',o:['His salary only','His character, protection, and leadership','His car'],a:1,e:'Income changes. Character is what the family relies on.'}],
+  play:[
+   {who:'Big news',s:'She is offered a promotion in another country.',o:[['He forbids it immediately.',0],['She accepts without discussing it.',2],['They sit together and weigh family, careers, and children, then decide jointly.',15]],e:'Joint decisions survive bad outcomes; one-sided ones don\'t.'},
+   {who:'Mid-argument',s:'You feel like saying: "It\'s MY money paying for this house!"',o:[['Say it.',0],['Leave the room.',6],['"Let\'s talk about the decision, not whose salary."',15]],e:'Money used as a weapon wounds for years.'}],
+  mission:'Write a short letter: "What I respect about my future spouse beyond money."',
+  hus:'Remind yourself: your worth is your character, not only your income.', wif:'Respect is unconditional. Never compare him with richer men.'},
+
+ {name:'The Family Fortress', prob:'In-law interference',
+  mirror:[['I tell my family about problems with my partner.',1],['I can say no to my parents respectfully.',5],['My family\'s opinion outweighs my spouse\'s.',1]],
+  learn:[
+   {q:'Who handles a complaint with YOUR family?',o:['Your spouse','You','Both of you confronting them together'],a:1,e:'Each spouse manages their own family. It protects everyone\'s dignity.'},
+   {q:'Eid and family visits work best when:',o:['Decided at the last minute','Agreed in advance with a fair rotation','Always with the husband\'s family'],a:1,e:'A schedule removes a yearly fight.'},
+   {q:'A good boundary sentence is:',o:['"Mind your own business."','"We love you, and we\'ll decide this together as a couple."','Silence'],a:1,e:'Warmth plus a clear boundary keeps love and limits together.'}],
+  play:[
+   {who:'His mother',s:'"Your wife doesn\'t cook like me."',o:[['He agrees, laughing.',0],['He says nothing, then tells his wife later.',3],['"She does her best and I\'m happy, Mama. Teach us your recipe sometime!"',15]],e:'Defend your spouse warmly, without attacking your parent.'},
+   {who:'Online',s:'A sister-in-law shares details of your private argument.',o:[['Confront her publicly.',2],['Ignore it.',5],['The spouse talks privately to their own sister and you both agree a privacy rule.',15]],e:'Private problems stay private, and each spouse handles their own family.'}],
+  mission:'Write 3 boundary sentences you could say to your own family, kindly.',
+  hus:'Practise defending your wife in front of your mother, respectfully.', wif:'Practise keeping marital disputes away from your family.'},
+
+ {name:'The Home Arena', prob:'Housework imbalance',
+  mirror:[['I can cook at least 3 dishes.',5],['I notice what needs doing at home without being asked.',5],['Housework is mainly one gender\'s job.',1]],
+  learn:[
+   {q:'Both spouses work full time. Housework should be:',o:['Mostly her job','Shared roughly 50/50 by time','Done entirely by a helper'],a:1,e:'Equal effort by time, not identical tasks.'},
+   {q:'"Mental load" means:',o:['Physical cleaning','Planning, remembering, and organizing','Office stress'],a:1,e:'Remembering the school forms is work too.'},
+   {q:'At home, the Prophet ﷺ:',o:['Never did housework','Helped with household tasks','Only gave instructions'],a:1,e:'Aisha (RA) said he served his family at home.'}],
+  play:[
+   {who:'7pm, both just home',s:'Nobody has started dinner.',o:[['Wait for your spouse to start.',0],['Order food every night.',6],['One cooks, the other handles kids and dishes, as planned on Friday.',15]],e:'A weekly plan removes the daily negotiation.'},
+   {who:'Again',s:'Your spouse forgot their chores for the third time.',o:[['Shout about it.',0],['Do it silently and resent it.',4],['Raise it calmly at the weekly meeting and adjust the plan.',15]],e:'Silent resentment builds; a calm meeting fixes the system.'}],
+  mission:'Learn 3 basic dishes, or do a full week of your own laundry and cleaning.',
+  hus:'Cook one full meal for your family this week.', wif:'Plan one week of tasks on paper and share it.'},
+
+ {name:'Patience Peak', prob:'Low coping skills',
+  mirror:[['I make decisions when I am angry.',1],['I apologize without excuses.',5],['Small things ruin my whole day.',1]],
+  learn:[
+   {q:'The Sunnah when angry:',o:['Speak your mind immediately','Sit down, make wudu, change your place','Leave the house'],a:1,e:'Changing posture and making wudu physically lowers anger.'},
+   {q:'Saying talaq in anger is:',o:['Harmless if not meant','Serious and never to be used as a threat','Normal in arguments'],a:1,e:'Words of divorce have legal and religious weight. Never use them as a weapon.'},
+   {q:'The time-out rule:',o:['Stop for 20 minutes, then come back','Stop talking for days','Win first, then stop'],a:0,e:'A time-out works only if you return to finish the talk.'}],
+  play:[
+   {who:'Dinner',s:'Dinner burnt. Everyone is hungry.',o:[['Complain loudly.',0],['Silent face all evening.',5],['"It\'s okay. Let\'s order and laugh about it."',15]],e:'Rate it 1 to 10: is this worth a fight? Usually it\'s a 2.'},
+   {who:'Mid-fight',s:'You feel rage rising.',o:[['Keep going.',0],['Leave the house for the night.',3],['"I need 20 minutes. I\'ll come back and we\'ll finish this."',15]],e:'Pause and promise to return.'}],
+  mission:'Keep a 7-day gratitude journal (3 good things daily), and say one "I\'m sorry" without excuses.',
+  hus:'Practise lowering your voice when you disagree.', wif:'Practise naming the issue once, without repeating it.'},
+
+ {name:'Adab & Attraction', prob:'Grooming, voice, and words',
+  mirror:[['I dress nicely at home, not only outside.',5],['I say thank you to my family daily.',5],['I use sarcasm when I am annoyed.',1]],
+  learn:[
+   {q:'Sunan al-Fitra include:',o:['Nails, hair removal, miswak','Only perfume','Only clothes'],a:0,e:'Personal hygiene is part of faith and of attraction.'},
+   {q:'Ibn Abbas (RA) adorned himself for his wife because:',o:['Guests were coming','He loved her to adorn herself for him','It was Eid'],a:1,e:'Attraction is maintained by both, every day.'},
+   {q:'Which is on the "banned words" list?',o:['"Thank you"','Comparing your spouse to someone else','Loving nicknames'],a:1,e:'Comparisons wound deeply and are rarely forgotten.'}],
+  play:[
+   {who:'Spouse arrives late',s:'Pick the kinder greeting:',o:[['"Late AGAIN?!"',0],['"Whatever."',3],['"I missed you. Is everything okay?"',15]],e:'Tone decides the next hour of the evening.'},
+   {who:'A delicate issue',s:'Your spouse\'s breath bothers you.',o:[['Mention it in front of others.',0],['Avoid closeness silently.',4],['A gentle private word, with a gift of mints.',15]],e:'Kind, private, practical. Never shaming.'}],
+  mission:'Run a 14-day streak: daily grooming plus 3 kind words to your family.',
+  hus:'Grooming, a gentle voice, compliments, and help at home.', wif:'Grooming at home, a warm welcome, and appreciation of his effort.'},
+
+ {name:'The Warm Home', prob:'Home atmosphere & etiquette',
+  mirror:[['My home feels calm and welcoming when guests arrive.',5],['I notice smell, light and tidiness in a room.',5],['I bring outside stress into the house.',1]],
+  learnW:[
+   {q:'The fastest way to make the home feel calm in the evening:',o:['Bright ceiling lights and the TV on','Warm lamps, soft light, and bukhoor or a fresh scent','Everyone in separate rooms'],a:1,e:'Warm light and a pleasant scent change the mood of a home in minutes.'},
+   {q:'When guests visit, a gracious hostess:',o:['Serves herself first','Greets at the door, offers coffee and dates, and serves elders first','Shows photos on her phone'],a:1,e:'In our tradition the guest is honoured: elders first, coffee poured with the right hand, a smile throughout.'},
+   {q:'A small-budget décor upgrade with big impact:',o:['A new sofa','Decluttering, cushions, plants, and one framed piece','More furniture'],a:1,e:'Less clutter plus texture and green beats expensive furniture.'}],
+  learnH:[
+   {q:'Coming home after a hard day, the best habit is:',o:['Complain about work first','Salam, a smile, and 10 minutes of attention before the phone','Straight to the TV'],a:1,e:'The first 3 minutes at the door set the tone for the whole evening.'},
+   {q:'When guests visit, a good host:',o:['Sits while his wife serves everything','Greets them standing, helps serve, and walks guests out to the door','Leaves early'],a:1,e:'Hospitality is shared. Walking guests to the door is part of the adab of hosting.'},
+   {q:'A husband adds to the home\'s atmosphere by:',o:['Nothing, it\'s her job','Fixing lights, keeping his own space tidy, bringing flowers or plants','Buying a bigger TV'],a:1,e:'A warm home is built by both.'}],
+  playW:[
+   {who:'Unexpected guests',s:'His parents call: they will arrive in 30 minutes.',o:[['Panic and complain to him.',0],['Ask him to say you are not home.',2],['A 10-minute tidy, light the bukhoor, coffee and dates ready, and a smile.',15]],e:'A quick, calm reset plan makes surprise visits easy.'},
+   {who:'Evening',s:'The house feels tense and noisy after work.',o:[['Shout for quiet.',0],['Go to your room alone.',5],['Dim the lights, calm Quran or soft music, tea for both.',15]],e:'You can change a mood by changing the room.'}],
+  playH:[
+   {who:'Tonight',s:'Your friends want to visit tonight. Your wife is tired.',o:[['Say yes without asking her.',0],['Refuse your friends rudely.',4],['Ask her first, then offer to order food and handle the hosting.',15]],e:'Her home, her energy: ask first, then carry the load.'},
+   {who:'At home',s:'The living-room lamp has been broken for two weeks.',o:[['Wait for her to call a technician.',0],['Buy a new lamp and leave the old one.',6],['Fix it this weekend, or call someone yourself.',15]],e:'Small fixes done quickly say "I care about our home".'}],
+  mission:'Pick one home challenge for this week:',
+  missionOptsW:['Set up a calm corner: a lamp, a cushion, a plant, a scent.','Host a small coffee-and-dates visit with full adab.','Declutter one room for 20 minutes.','Learn the etiquette of serving Arabic coffee.'],
+  missionOptsH:['Practise the 3-minute arrival: salam, smile, attention.','Host friends and walk them out to the door.','Take charge of keeping one area of the home tidy.','Fix one small thing that has been waiting.'],
+  hus:'A gentleman\'s home starts at the door: salam, a smile, and a helping hand.', wif:'A lady\'s grace: calm, warmth, and a welcoming home.'},
+
+ {name:'Skilled Hands', prob:'Cooking, sewing, fixing, heavy work',
+  mirror:[['I can cook a full meal for guests.',5],['I can fix small things at home.',5],['I call someone for every small repair or task.',1]],
+  learnW:[
+   {q:'A smart first cooking class to take:',o:['Cake decorating','Basics: knife skills, rice, a stew, a soup, and one family dish','Sushi'],a:1,e:'Five reliable dishes cover most weeknights.'},
+   {q:'A sewing skill every home needs:',o:['Making a dress','Sewing on a button and fixing a hem','Embroidery'],a:1,e:'Ten-minute fixes save clothes and money.'},
+   {q:'Weeknight dinners get easier when you:',o:['Cook from scratch every day without a plan','Plan the week, shop once, and batch-cook on the weekend','Order online every night'],a:1,e:'Batch cooking frees your evenings for each other.'}],
+  learnH:[
+   {q:'A basic home toolkit has:',o:['Only a hammer','Screwdrivers, pliers, a drill, a tape measure, a level, a voltage tester','Nothing, call a handyman'],a:1,e:'Most small repairs need just these six tools.'},
+   {q:'Before touching any electrical fitting:',o:['Just be quick','Switch off the breaker and test that the power is off','Use the wall switch only'],a:1,e:'Safety first. For major electrical work, use a licensed technician.'},
+   {q:'Moving heavy furniture safely:',o:['Bend your back and lift fast','Bend your knees, keep the load close, use a second person or a trolley','Drag it across the tiles'],a:1,e:'Lift with your legs and protect the floor and your back.'}],
+  playW:[
+   {who:'Weeknight',s:'You both arrive home hungry at 7pm.',o:[['Skip dinner.',0],['Order food again.',5],['Heat a dish from Saturday\'s batch cooking in 20 minutes.',15]],e:'A little planning turns a stressful evening into a calm one.'},
+   {who:'Before an outing',s:'A button falls off his shirt.',o:[['Laugh and leave it.',0],['Tell him to wear another shirt.',8],['Sew it back on in 3 minutes.',15]],e:'Small skills, big appreciation.'}],
+  playH:[
+   {who:'Saturday',s:'The kitchen tap has been dripping all week.',o:[['Ignore it.',0],['Complain to the landlord next month.',5],['Replace the washer or cartridge yourself with a video guide.',15]],e:'Fixing it the same week shows reliability.'},
+   {who:'Moving day',s:'You are moving into a new flat.',o:[['Let your wife carry boxes alone.',0],['Hire movers and disappear.',6],['Carry the heavy items, assemble the furniture, hang the curtains and the TV.',15]],e:'The heavy work and the toolbox are yours to own.'}],
+  mission:'Pick one skill challenge for this week:',
+  missionOptsW:['Sign up for a cooking class (basics or family dishes).','Learn to sew a button and fix a hem.','Cook a 3-dish meal for your family.','Plan a week of meals and batch-cook once.'],
+  missionOptsH:['Build your 6-tool home kit.','Fix a dripping tap, a loose handle, or a door hinge.','Assemble one piece of furniture yourself.','Cook one dish for your family; basic skills are shared.'],
+  hus:'Repairs, heavy lifting, and the car are yours to own; learn cooking basics too.', wif:'Kitchen, sewing, and décor skills; also know where the breaker switch is.'}
+];
+const N = WORLDS_EN.length;
+const TK = ()=>S.track==='husband'?'H':'W';
+const tv = (w,i)=>{const k=TK(); const ov=((S.lang==='ar'?GEN_AR:GEN_EN)[i])||{}; const b={...w, mirror:w['mirror'+k]||w.mirror, learn:w['learn'+k]||w.learn, play:w['play'+k]||w.play, missionOpts:w['missionOpts'+k]||w.missionOpts}; return {...b, ...(ov.A||{}), ...(ov[k]||{})};};
+
+const BOSS_EN = [
+ ['Shared bathroom','Week one: your spouse leaves the bathroom wet and tissues on the floor.',[['Complain harshly.',0],['Mention it kindly once and agree simple bathroom rules together.',2],['Clean it silently and resent it.',1]]],
+ ['First fight','A small disagreement about time with friends turns loud.',[['Call a 20-minute time-out and return to it.',2],['Win the argument.',0],['Drop it and never discuss it.',1]]],
+ ['In-law visit','A parent criticizes your spouse at dinner.',[['Stay silent.',1],['Defend your spouse warmly and respectfully.',2],['Join the joke.',0]]],
+ ['Money shortage','The month ends AED 2,000 short.',[['Blame each other.',0],['Borrow quietly from family.',1],['Sit down, review the budget, and cut together.',2]]],
+ ['Phone jealousy','Your spouse asks who you were texting late.',[['Show calmly and agree a rule.',2],['Get defensive.',0],['Show it but sulk.',1]]],
+ ['Ramadan','Both tired, iftar every night, family visits.',[['Share cooking and visits on a plan.',2],['One person does everything.',0],['Order food all month.',1]]],
+ ['Job loss','One of you loses their job.',[['Hide it for a while.',0],['Share it the same day and make a plan with deadlines.',2],['Let the other pay without a plan.',1]]],
+ ['Pregnancy news','Exciting and scary news arrives.',[['Plan together: money, leave, roles.',2],['Tell the families before talking together.',0],['Wait and see.',1]]],
+ ['Exhaustion','Work and home leave no time for each other.',[['Book a weekly couple evening.',2],['Accept it, it\'s normal.',1],['Complain to friends.',0]]],
+ ['Eid','Both families expect you on the first day.',[['Follow the rotation you agreed.',2],['Whoever shouts loudest wins.',0],['Split up and go separately.',1]]],
+ ['Temptation at work','A colleague becomes very friendly.',[['Enjoy the attention, it\'s harmless.',0],['Set a boundary and tell your spouse.',2],['Avoid them but stay secretive.',1]]],
+ ['Anniversary','One year together.',[['Review the year: what worked, what to improve.',2],['Expensive gift, no conversation.',1],['Forget it.',0]]]
+];
+
+const WORLDS_AR = [
+ {name:'نظيف ومنعش', prob:'النظافة والترتيب',
+  mirror:[['أترك الحمام نظيفاً وجافاً بعد استخدامه.',5],['أترك المناديل المستعملة أو الأكواب أو الملابس حيث استخدمتها.',1],['أنظّف أسناني قبل النوم كل ليلة.',5]],
+  learn:[
+   {q:'بعد استخدام الحمام، العادة الصحيحة:',o:['تركه لعاملة التنظيف','الشطف، ومسح المقعد والأرض، وإنزال الغطاء، وغسل اليدين، وإعادة المنشفة مكانها','الشطف فقط'],a:1,e:'اترك كل مكان نظيفاً كما وجدته أو أنظف، فمن يستخدمه بعدك هو من تحب.'},
+   {q:'قال النبي ﷺ إن الطُّهور:',o:['أمر اختياري','شطر الإيمان','للصلاة فقط'],a:1,e:'«الطُّهور شطر الإيمان» (رواه مسلم). النظافة في البيت جزء من دينك، لا من آدابك فقط.'},
+   {q:'قبل النوم، أفضل عادة:',o:['الذهاب إلى السرير مباشرة','تنظيف الأسنان أو السواك، والوضوء، والنوم في سرير نظيف ومنعش','وجبة خفيفة متأخرة في السرير'],a:1,e:'كان النبي ﷺ يستاك إذا قام من الليل. الفم المنعش والسرير النظيف يجعلان غرفة النوم مكان راحة.'}],
+  play:[
+   {who:'صباح مستعجل',s:'أنت متأخر. على المغسلة معجون أسنان وشعر، والمنشفة على الأرض.',o:[['تتركها، لا وقت.',0],['تتركها وتعد بتنظيفها لاحقاً.',4],['تأخذ 60 ثانية: تشطف المغسلة وتعلّق المنشفة.',15]],e:'قاعدة الدقيقة الواحدة: ما يأخذ أقل من دقيقة، افعله الآن.'},
+   {who:'وقت النوم',s:'في غرفة النوم ملابس على الكرسي، ومناديل بجانب السرير، ورائحة خانقة.',o:[['تنام، لا بأس.',0],['ترش عطراً فوق الفوضى.',5],['ترتيب في 5 دقائق: الملابس في مكانها، والمناديل في السلة، وهواء نقي، ورائحة طيبة، وتنظيف الأسنان.',15]],e:'غرفة النوم المرتبة المنعشة تقرّب، والفوضى تُبعد.'}],
+  mission:'اختر تحدياً لمدة 7 أيام:',
+  missionOpts:['اترك الحمام نظيفاً تماماً بعد كل استخدام.','نظّف أسنانك (أو استعمل السواك) كل ليلة قبل النوم.','رتّب غرفة النوم 5 دقائق كل مساء: ترتيب، وسلة، وهواء نقي، ورائحة طيبة.','لا تترك أثراً خلفك: لا مناديل ولا أكواب ولا ملابس متروكة في أي مكان.','ابتسم لعائلتك كل صباح: «تبسّمك في وجه أخيك صدقة».'],
+  hus:'إنزال المقعد والغطاء، وتجفيف الأرض، وتنظيف شعر اللحية من المغسلة.', wif:'تنظيف الشعر من المصرف والمغسلة، وإعادة المستحضرات مكانها، وغرفة نوم منعشة.'},
+
+ {name:'حسن الخلق', prob:'الأخلاق والمعاملة',
+  mirrorH:[['أرفع صوتي أو أصرخ عندما أغضب.',1],['لا أقدّم الهدايا إلا في المناسبات.',1],['سأتحدث بصراحة مع زوجتي عن أي مشكلة قبل أن أفكر في زوجة ثانية.',5]],
+  mirrorW:[['أرفع صوتي عندما أنزعج.',1],['أتحدث عن الآخرين في غيابهم.',1],['أشكر الناس على الأشياء الصغيرة التي يفعلونها لي.',5]],
+  learnH:[
+   {q:'قال النبي ﷺ إن خيركم:',o:['أغناكم','خيركم لأهله','أقواكم'],a:1,e:'«خيركم خيركم لأهله، وأنا خيركم لأهلي» (رواه الترمذي).'},
+   {q:'راتب زوجتك ومهرها وذهبها وأملاكها:',o:['مال الأسرة','ملك لها وحدها، ولا يُستعمل إلا برضاها','لك أن تديره'],a:1,e:'أعطى القرآن الزوجة الملكية الكاملة لمهرها ومالها (النساء: 4)، وأخذه دون رضاها ظلم.'},
+   {q:'قال الله تعالى: ﴿وَلَا تَقْرَبُوا الزِّنَىٰ﴾ (الإسراء: 32). المعنى:',o:['المحرّم هو الفعل نفسه فقط','المحادثات السرية والمغازلة وكل ما يقود إليه يجب تجنبه أيضاً','لا بأس إن لم يعلم أحد'],a:1,e:'الزنا من كبائر الذنوب، والقرآن نهى حتى عن الاقتراب منه، فالطريق يُغلق من بدايته.'}],
+  learnW:[
+   {q:'الحديث عن شخص في غيابه بما يكره هو:',o:['حديث عادي','غيبة نهى عنها القرآن','جائز إن كان صحيحاً'],a:1,e:'حتى لو كان صحيحاً فهو غيبة (الحجرات: 12)، وإن كان كذباً فهو بهتان. قولي خيراً أو اصمتي.'},
+   {q:'تكسب الزوجة قلوب أهل زوجها بـ:',o:['الابتعاد عنهم','الاحترام، والتحية الدافئة، والهدايا الصغيرة، وعدم الشكوى منهم في الغضب','منافستهم'],a:1,e:'احترام أهله احترام له، والمشكلات الحقيقية تُطرح بهدوء وعلى انفراد.'},
+   {q:'معنى «من لا يشكر الناس لا يشكر الله»:',o:['الشكر لله وحده','شكر زوجك وعائلتك جزء من إيمانك','الشكر للأمور الكبيرة فقط'],a:1,e:'رواه أبو داود والترمذي. كلمة بسيطة مثل «الله يعطيك العافية» على جهده تبني الكثير.'}],
+  playH:[
+   {who:'أمر يزعجك',s:'عادة لدى زوجتك تزعجك باستمرار، وصديقك يمزح: «تزوّج الثانية وارتاح».',o:[['تبدأ تفكر في الأمر جدياً.',0],['تسكت وتبتعد عنها.',3],['تخبرها بلطف ووضوح بما يزعجك، وتسألها ما الذي يمكنك فعله، وتساعدها على إصلاحه.',15]],e:'«لا يَفْرَكْ مؤمنٌ مؤمنةً، إن كره منها خُلُقاً رضي منها آخر» (رواه مسلم). تحدّث وأصلح قبل أن تنظر إلى غيرها.'},
+   {who:'زوجتك غاضبة',s:'زوجتك غاضبة لأنك عدت متأخراً دون اتصال للمرة الثالثة.',o:[['«أنتِ تشتكين دائماً!»',0],['تعتذر لكن لا تغيّر شيئاً.',5],['تعتذر، وتعرف بالضبط ما يغضبها، وتصلحه: اتصال أو رسالة في كل مرة.',15]],e:'أصلح سبب غضبها، لا اللحظة فقط.'}],
+  playW:[
+   {who:'جلسة عائلية',s:'بدأت ابنة عمك تتحدث عن مشاكل زواج إحدى القريبات.',o:[['تشاركين بتفاصيل تعرفينها.',0],['تستمعين بصمت.',5],['تغيّرين الموضوع بلطف: «الله ييسر لهم. كيف عملك الجديد؟»',15]],e:'إنهاء الغيبة بأدب يحمي الآخرين ويحفظ سمعتك.'},
+   {who:'حماتك',s:'حماتك تزورك وتغيّر ترتيب أغراض مطبخك.',o:[['تشتكين لزوجك بغضب في الليل.',0],['تسكتين وتحملين في قلبك.',5],['ترحّبين بها بدفء، ثم تخبرين زوجك لاحقاً بهدوء بما تفضّلين.',15]],e:'الاحترام أمامها، والصراحة على انفراد: هكذا تبقى العلاقتان سليمتين.'}],
+  mission:'اختر تحدياً أخلاقياً لمدة 7 أيام:',
+  missionOptsH:['أسبوع كامل دون صراخ مرة واحدة.','قدّم هدية صغيرة دون مناسبة: زهور، أو حلوى، أو قهوتها المفضلة.','اشكر والدتك أو أختك أو خطيبتك على 3 أشياء كل يوم.','اسأل: «ما الذي يزعجك ويمكنني إصلاحه؟» وأصلح شيئاً واحداً هذا الأسبوع، حتى لو احتاج إلى شراء ما يلزم.','احذف أو اكتم أي محادثة لا تنجح في اختبار «هل سترتاح زوجتي لو رأتها؟».'],
+  missionOptsW:['أسبوع كامل دون رفع صوتك مرة واحدة.','أسبوع بلا غيبة: غيّري الموضوع كلما بدأت.','اشكري عائلتك على 3 أشياء كل يوم.','قدّمي لفتة لطيفة لأهل خطيبك: اتصال، أو طبق، أو هدية صغيرة.','ابدئي كل يوم بكلمة إيجابية.'],
+  hus:'كلام طيب، وبلا صراخ، وهدايا، ومساعدة في البيت، ومالها لها، ووفاء تام.', wif:'صوت هادئ، ولسان نظيف، واحترام دافئ لأهله، وشكر لجهده.'},
+
+ {name:'قلعة الإصغاء', prob:'ضعف التواصل',
+  mirror:[['عندما يشتكي شريكي، أقاطعه لأدافع عن نفسي.',1],['أستطيع أن أعيد ما قاله الآخر قبل أن أرد.',5],['عندما أنزعج، أرفع صوتي.',1]],
+  learn:[
+   {q:'ماذا تعني طريقة «اسمع، أعِد، تفهَّم»؟',o:['اسمع، رُدّ، تحقّق','اسمع، أعِد ما سمعته، تفهَّم الشعور','انظر، استجب، قدِّر'],a:1,e:'اسمع دون مقاطعة، أعِد ما سمعته، ثم بيّن أنك تفهم الشعور. بعدها فقط ترد.'},
+   {q:'أي جملة تُعد بداية لطيفة للحديث؟',o:['«أنت لا تساعدني أبداً!»','«لماذا أنا دائماً من يفعل كل شيء؟»','«أشعر بالتعب الليلة، هل يمكنك أن تتولى الصحون؟»'],a:2,e:'البداية اللطيفة تذكر شعورك وطلباً محدداً، فتدعو إلى المساعدة لا إلى الدفاع.'},
+   {q:'تفهُّم مشاعر شريكك يعني:',o:['الموافقة على كل ما يقول','إظهار أن شعوره مفهوم حتى لو رأيت الأمر بشكل مختلف','الصمت حتى يهدأ'],a:1,e:'يمكنك أن تخالفه في الوقائع وتقول: «أفهم لماذا تشعر بذلك».'}],
+  play:[
+   {who:'شريك حياتك',s:'«تأخرت مرة أخرى ولم تتصل!»',o:[['«كنت أعمل من أجلنا!»',0],['«آسف.»',8],['«أفهم أنك قلقت لأني لم أتصل. معك حق، سأرسل رسالة في المرة القادمة.»',15]],e:'إعادة الكلام + تفهّم الشعور + حل عملي = نهاية الخلاف بجملة واحدة.'},
+   {who:'شريك حياتك',s:'«أنت دائماً على الهاتف عندما أكلمك.»',o:[['«وأنت أيضاً!»',0],['«حسناً.»',5],['تضع الهاتف جانباً: «تشعر أني أتجاهلك. تكلم، أنا أسمعك الآن.»',15]],e:'الفعل أولاً (ترك الهاتف)، ثم تسمية الشعور.'}],
+  mission:'اختر تحدياً قصيراً للإصغاء (دقيقتان) لتجربه اليوم:',
+  missionOpts:['اسأل أحداً «كيف كان يومك؟» واستمع فقط، دون نصائح.','أعِد عبارة واحدة قالها صديق قبل أن ترد.','عندما يشتكي أحد اليوم، قل له: «هذا مفهوم».','ضع هاتفك مقلوباً طوال حديث كامل.'],
+  hus:'تدرّب على ألا تسارع إلى «الحلول»: استمع حتى النهاية أولاً.', wif:'تدرّبي على قول حاجتك بوضوح بدلاً من انتظار أن تُفهم.'},
+
+ {name:'بلا أقنعة', prob:'قناع الخطوبة',
+  mirror:[['عائلتي تصفني تماماً كما أصف نفسي.',5],['أتصرف بشكل مختلف عندما أريد أن أُعجب أحداً.',1],['أستطيع أن أذكر أسوأ ثلاث عادات لدي.',5]],
+  learn:[
+   {q:'في السعودية، أكثر من 65% من حالات الطلاق في 2025 وقعت في السنة الأولى. من أهم الأسباب:',o:['سوء الحظ','سلوك مثالي أثناء الخطوبة ينهار بعد الزواج','مشاكل الأهل فقط'],a:1,e:'يُظهر الناس أفضل ما لديهم في الخطوبة، والحقيقة تظهر مع أول أسبوع من التعب والجوع والضغط.'},
+   {q:'«دليل استخدامك» الشخصي يجب أن يتضمن:',o:['نقاط قوتي فقط','ما يستفزني، وعاداتي السيئة، وما يهدئني','قسيمة راتبي'],a:1,e:'لا يستطيع شريكك أن يساعد إلا فيما يعرفه.'},
+   {q:'أفضل وقت للكشف عن عادة سيئة:',o:['بعد الزفاف','قبل إتمام الخطوبة','أبداً'],a:1,e:'المصارحة قبل الالتزام صدق، وبعد الزفاف تبدو خداعاً.'}],
+  play:[
+   {who:'الخطيب أو الخطيبة',s:'«كيف تكون عندما تغضب؟»',o:[['«لا أغضب أبداً.»',0],['«حسب الموقف.»',5],['«أصمت ساعة وأحتاج إلى مساحة، ثم أكون مستعداً للحديث.»',15]],e:'الإجابة الصادقة المحددة تعطي شريكك خريطة.'},
+   {who:'بعد يوم عمل طويل',s:'أنت متعب وجائع، ويسألك شريكك عن خطط نهاية الأسبوع.',o:[['ترد بحدة: «ليس الآن!»',0],['تتجاهل وتتصفح هاتفك.',3],['«أحتاج 15 دقيقة لأرتاح، ثم أنا معك تماماً.»',15]],e:'تسمية حالتك تحمي شريكك من أسوأ ما فيك.'}],
+  mission:'اسأل اثنين من أفراد عائلتك: «ما أسوأ عاداتي؟» وقارن إجاباتهم بنظرتك إلى نفسك.',
+  hus:'اسأل والدتك أو أختك أيضاً، فهن يرين ما يفوتك.', wif:'اسألي والدك أو أخاك أيضاً، فهم يرون ما يفوتك.'},
+
+ {name:'الاختيار الصحيح', prob:'سوء اختيار الشريك',
+  mirror:[['أعرف شروطي التي لا أتنازل عنها في شريك الحياة.',5],['المظهر أو المكانة أهم عندي من الأخلاق.',1],['رأيت شريكي المستقبلي تحت ضغط حقيقي.',5]],
+  learn:[
+   {q:'الاستشارة تعني:',o:['سؤال أهل الحكمة قبل القرار','نوعاً من الصلاة','عقد الزواج'],a:0,e:'الاستخارة طلب الهداية من الله، والاستشارة طلب الرأي من الحكماء. استعمل الاثنين.'},
+   {q:'أقوى علامة تحذير:',o:['اختلاف الهوايات','قلة الاحترام للنادل أو السائق أو لأمه','اختلاف الذوق في الطعام'],a:1,e:'طريقة تعامل الشخص مع من هم أضعف منه تتنبأ بطريقة تعامله معك بعد الزواج.'},
+   {q:'أفضل طريقة لمعرفة أخلاق الشخص:',o:['حساباته على مواقع التواصل','رؤيته تحت الضغط، ومع المال، ومع عائلته','عشاء واحد طويل'],a:1,e:'الأخلاق تظهر في الضغط والكرم والتعامل مع الأهل، لا في لقاء مُرتَّب.'}],
+  play:[
+   {who:'لقاء تعارف',s:'هو لطيف وكريم معك، لكنه أهان النادل مرتين.',o:[['تتجاهلين الأمر، فهو لطيف معي.',0],['تخبرين الجميع بما حدث.',3],['تعتبرينها علامة تحذير وتلاحظين أكثر قبل القرار.',15]],e:'علامة واحدة معلومة وليست حكماً. استمري في ملاحظة تعامله مع الآخرين.'},
+   {who:'عائلتك',s:'عائلتك تضغط لقبول متقدّم لا يحقق شروطك الأساسية.',o:[['تقبل لإرضائهم.',0],['ترفض بفظاظة.',4],['تشرح شروطك الخمسة باحترام وتطلب وقتاً.',15]],e:'وضوح القيم يساعدك على الرفض باحترام.'}],
+  mission:'اكتب صفحة واحدة: «شريك حياتي المثالي» في جهة، و«شروطي التي لا أتنازل عنها» في الجهة الأخرى.',
+  hus:'أضف نوع الزوجة التي تستطيع دعمها فعلاً: عاملة، أو طالبة، أو في البيت.', wif:'أضيفي نوع الزوج الذي تستطيعين احترامه طويلاً، بعيداً عن الدخل.'},
+
+ {name:'الدرع الرقمي', prob:'الهاتف ووسائل التواصل والخيانة',
+  mirror:[['لا أمانع أن يقرأ شريك حياتي محادثاتي.',5],['أستخدم هاتفي أثناء الوجبات.',1],['أقارن حياتي بحياة الأزواج على إنستغرام.',1]],
+  learn:[
+   {q:'اختبار «هل سيرتاح شريكي لو رأى هذا؟» يُطبَّق:',o:['على الرسائل العاطفية فقط','قبل إرسال أي رسالة إلى الجنس الآخر','أبداً، الخصوصية مطلقة'],a:1,e:'معظم الخيانات تبدأ بمحادثات «بريئة». هذا الاختبار يكشفها مبكراً.'},
+   {q:'أفضل منطقتين بلا هاتف:',o:['الحمام والسيارة','وقت الطعام وغرفة النوم','المكتب والنادي'],a:1,e:'الوجبات ووقت النوم هي وقت التواصل الأساسي بينكما.'},
+   {q:'منشورات «الزوجين المثاليين» على الإنترنت:',o:['حياة حقيقية','لقطات مختارة بعناية','أهداف يجب تقليدها'],a:1,e:'مقارنة حياتك الحقيقية بأجمل لقطات غيرك تصنع خيبة زائفة.'}],
+  play:[
+   {who:'زميل عمل، 12:12 بعد منتصف الليل',s:'«ليلة سعيدة 😊» من زميل من الجنس الآخر.',o:[['ترد بحرارة.',0],['تحذفها سراً.',4],['لا ترد، وتحصر حديث العمل في أوقات العمل، وتخبر شريكك.',15]],e:'الشفافية تُنهي السر قبل أن يكبر.'},
+   {who:'شريك حياتك',s:'«هل أستطيع رؤية تلك المحادثة؟»',o:[['ترفض بغضب.',0],['تعرضها لكن تبقى عابساً طوال المساء.',7],['تعرضها بهدوء.',15]],e:'الانفتاح الهادئ يبني ثقة أكثر من أي كلمة سر.'}],
+  mission:'راقب وقت استخدامك للشاشة 3 أيام، ثم قلّله 30 دقيقة يومياً.',
+  hus:'اكتم مجموعات الدردشة بعد العاشرة مساءً.', wif:'اكتمي مجموعات الدردشة بعد العاشرة مساءً.'},
+
+ {name:'الخزينة', prob:'المال وفقدان العمل',
+  mirror:[['أعرف بالضبط ما عليّ من ديون (قروض، بطاقات).',5],['قد أخفي ديناً عن خطيبي أو خطيبتي.',1],['لدي مدخرات للطوارئ.',5]],
+  learn:[
+   {q:'في الإسلام، راتب الزوجة العاملة:',o:['ملك للبيت','ملك لها، وأي مساهمة منها تطوّع','يذهب إلى الزوج'],a:1,e:'تبقى النفقة واجب الزوج، ومساهمة الزوجة هدية أو قرض متفق عليه.'},
+   {q:'صندوق الطوارئ الصحي يغطي:',o:['أسبوعاً واحداً','نحو 6 أشهر من المصاريف','لا شيء، التوكل يكفي'],a:1,e:'اعقلها وتوكل: في الإمارات قد يؤثر فقدان العمل على الإقامة أيضاً.'},
+   {q:'أفضل طريقة للتعامل مع مساهمة الزوجة المالية:',o:['لا داعي لمناقشتها','كتابتها هديةً أو قرضاً','إخبار العائلتين'],a:1,e:'الكتابة تمنع الضغينة والخلاف لاحقاً.'}],
+  play:[
+   {who:'أسبوع صعب',s:'الزوج يفقد عمله.',o:[['يخفي الأمر ويتظاهر بالذهاب إلى العمل.',0],['الزوجة تدفع كل شيء بلا حد زمني.',3],['يخبر زوجته في اليوم نفسه ويتفقان على خطة بمواعيد محددة.',15]],e:'الصدق + خطة محددة بوقت يحميان الكرامة والزواج.'},
+   {who:'قبل الزفاف',s:'العائلتان تريدان حفلاً كبيراً، ومدخراتكما محدودة.',o:[['قرض من أجل حفل كبير.',2],['إلغاء أي احتفال رغم رغبة الجميع.',7],['حفل ومهر معقولان في حدود المدخرات.',15]],e:'البدء بالديون من أسرع الطرق إلى الخلاف المبكر.'}],
+  mission:'ضع ميزانيتك الشهرية الحقيقية: الدخل، والمصاريف الثابتة، ودعم الأهل، والادخار.',
+  hus:'أضف خطة مكتوبة لحالة فقدان العمل: الخطوات والمواعيد.', wif:'حدّدي الجزء من دخلك الذي يبقى مدخراتك الخاصة.'},
+
+ {name:'قاعة العرش', prob:'الكبرياء وتبادل الأدوار',
+  mirror:[['سأنزعج لو كان دخل شريكي أعلى بكثير من دخلي.',1],['القرارات الكبيرة تُتخذ معاً.',5],['استخدمت المال سلاحاً في خلاف.',1]],
+  learn:[
+   {q:'الشورى تعني:',o:['التشاور المتبادل','الزوج يقرر','صاحب الدخل الأعلى يقرر'],a:0,e:'الشورى مبدأ قرآني: القرار يُتخذ معاً.'},
+   {q:'عندما يكون دخل الزوجة أعلى، القرارات الكبيرة تُتخذ:',o:['منها','منه','منهما معاً بالشورى'],a:2,e:'القرار يتبع التشاور، لا الراتب.'},
+   {q:'قيمة الزوج تكمن في:',o:['راتبه فقط','أخلاقه وحمايته وقيادته','سيارته'],a:1,e:'الدخل يتغير، والأخلاق هي ما تعتمد عليه الأسرة.'}],
+  play:[
+   {who:'خبر كبير',s:'عُرضت عليها ترقية في بلد آخر.',o:[['يمنعها فوراً.',0],['تقبل دون نقاش.',2],['يجلسان معاً ويوازنان بين الأسرة والعمل والأطفال، ثم يقرران معاً.',15]],e:'القرارات المشتركة تصمد أمام النتائج السيئة، والقرارات الفردية لا تصمد.'},
+   {who:'وسط خلاف',s:'تشعر برغبة في قول: «هذا مالي أنا الذي يصرف على البيت!»',o:[['تقولها.',0],['تغادر الغرفة.',6],['«لنتحدث عن القرار، لا عن راتب من.»',15]],e:'المال حين يُستعمل سلاحاً يجرح لسنوات.'}],
+  mission:'اكتب رسالة قصيرة: «ما الذي أحترمه في شريك حياتي بعيداً عن المال».',
+  hus:'تذكّر: قيمتك في أخلاقك، لا في دخلك فقط.', wif:'الاحترام غير مشروط. لا تقارنيه أبداً برجال أغنى منه.'},
+
+ {name:'حصن العائلة', prob:'تدخّل الأهل',
+  mirror:[['أخبر عائلتي بمشاكلي مع شريكي.',1],['أستطيع أن أقول «لا» لوالديّ باحترام.',5],['رأي عائلتي أهم من رأي شريك حياتي.',1]],
+  learn:[
+   {q:'من يتولى الشكوى مع عائلتك أنت؟',o:['شريك حياتك','أنت','أنتما معاً في مواجهتهم'],a:1,e:'كل زوج يتعامل مع عائلته، وهذا يحفظ كرامة الجميع.'},
+   {q:'زيارات العيد والأهل تنجح أكثر عندما:',o:['تُقرَّر في آخر لحظة','يُتفق عليها مسبقاً بتناوب عادل','تكون دائماً عند أهل الزوج'],a:1,e:'الجدول يلغي خلافاً يتكرر كل سنة.'},
+   {q:'جملة حدود جيدة:',o:['«لا تتدخلوا في شؤوننا.»','«نحبكم، وسنقرر هذا معاً كزوجين.»','الصمت'],a:1,e:'الدفء مع حدود واضحة يجمع بين المحبة والحزم.'}],
+  play:[
+   {who:'والدته',s:'«زوجتك لا تطبخ مثلي.»',o:[['يوافقها ضاحكاً.',0],['يسكت، ثم يخبر زوجته لاحقاً.',3],['«هي تبذل جهدها وأنا سعيد يا أمي. علّمينا وصفتك يوماً ما!»',15]],e:'دافع عن شريكك بدفء دون أن تهاجم والديك.'},
+   {who:'على الإنترنت',s:'أخت الزوج تنشر تفاصيل خلافكما الخاص.',o:[['مواجهتها علناً.',2],['التجاهل.',5],['يتحدث الزوج مع أخته على انفراد، ويتفق الزوجان على قاعدة للخصوصية.',15]],e:'المشاكل الخاصة تبقى خاصة، وكل زوج يتعامل مع عائلته.'}],
+  mission:'اكتب 3 جمل حدود يمكنك قولها لعائلتك بلطف.',
+  hus:'تدرّب على الدفاع عن زوجتك أمام والدتك باحترام.', wif:'تدرّبي على إبقاء خلافات الزواج بعيداً عن عائلتك.'},
+
+ {name:'ساحة البيت', prob:'عدم التوازن في أعمال البيت',
+  mirror:[['أستطيع طبخ 3 أطباق على الأقل.',5],['ألاحظ ما يحتاج إلى عمل في البيت دون أن يُطلب مني.',5],['أعمال البيت مسؤولية أحد الجنسين أساساً.',1]],
+  learn:[
+   {q:'كلا الزوجين يعمل بدوام كامل. أعمال البيت يجب أن:',o:['تكون على الزوجة غالباً','تُقسم تقريباً بالتساوي في الوقت','تقوم بها المساعدة بالكامل'],a:1,e:'جهد متساوٍ في الوقت، لا مهام متطابقة.'},
+   {q:'«العبء الذهني» يعني:',o:['التنظيف البدني','التخطيط والتذكّر والتنظيم','ضغط المكتب'],a:1,e:'تذكّر أوراق المدرسة عمل أيضاً.'},
+   {q:'في بيته، كان النبي ﷺ:',o:['لا يعمل في البيت أبداً','يساعد في أعمال البيت','يكتفي بإعطاء التعليمات'],a:1,e:'قالت عائشة رضي الله عنها إنه كان في مهنة أهله.'}],
+  play:[
+   {who:'السابعة مساءً، وصلتما للتو',s:'لم يبدأ أحد في تحضير العشاء.',o:[['تنتظر أن يبدأ شريكك.',0],['تطلب طعاماً كل ليلة.',6],['أحدكما يطبخ والآخر يتولى الأطفال والصحون، كما خططتما يوم الجمعة.',15]],e:'الخطة الأسبوعية تلغي التفاوض اليومي.'},
+   {who:'مرة أخرى',s:'شريكك نسي مهامه للمرة الثالثة.',o:[['تصرخ بسبب ذلك.',0],['تقوم بها بصمت وتحمل في قلبك.',4],['تطرح الأمر بهدوء في الاجتماع الأسبوعي وتعدّلان الخطة.',15]],e:'الضغينة الصامتة تتراكم، والاجتماع الهادئ يصلح النظام.'}],
+  mission:'تعلّم 3 أطباق أساسية، أو اغسل ملابسك ونظّف مكانك بنفسك لأسبوع كامل.',
+  hus:'اطبخ وجبة كاملة لعائلتك هذا الأسبوع.', wif:'خطّطي مهام أسبوع على الورق وشاركيها.'},
+
+ {name:'قمة الصبر', prob:'ضعف التحمّل',
+  mirror:[['أتخذ قرارات وأنا غاضب.',1],['أعتذر دون أعذار.',5],['الأشياء الصغيرة تفسد يومي كله.',1]],
+  learn:[
+   {q:'السنة عند الغضب:',o:['قل ما في نفسك فوراً','اجلس، وتوضأ، وغيّر مكانك','اخرج من البيت'],a:1,e:'تغيير الهيئة والوضوء يخففان الغضب جسدياً.'},
+   {q:'قول «طالق» في الغضب:',o:['لا يضر إن لم تقصده','أمر خطير ولا يُستعمل أبداً للتهديد','أمر عادي في الخلافات'],a:1,e:'لكلمات الطلاق وزن شرعي وقانوني. لا تستعملها سلاحاً أبداً.'},
+   {q:'قاعدة الاستراحة:',o:['توقف 20 دقيقة ثم عُد','توقف عن الكلام لأيام','انتصر أولاً ثم توقف'],a:0,e:'الاستراحة تنجح فقط إذا عدت لإكمال الحديث.'}],
+  play:[
+   {who:'العشاء',s:'احترق العشاء والجميع جائع.',o:[['تتذمر بصوت عالٍ.',0],['وجه عابس طوال المساء.',5],['«لا بأس. لنطلب طعاماً ونضحك على الموقف.»',15]],e:'قيّمه من 1 إلى 10: هل يستحق الخلاف؟ غالباً هو 2.'},
+   {who:'وسط الخلاف',s:'تشعر بالغضب يتصاعد.',o:[['تستمر.',0],['تغادر البيت لليلة.',3],['«أحتاج 20 دقيقة. سأعود ونكمل الحديث.»',15]],e:'توقّف، وعِد بالعودة.'}],
+  mission:'دفتر امتنان لمدة 7 أيام (3 أشياء جميلة يومياً)، وقل «أنا آسف» مرة واحدة دون أعذار.',
+  hus:'تدرّب على خفض صوتك عند الاختلاف.', wif:'تدرّبي على ذكر المشكلة مرة واحدة دون تكرار.'},
+
+ {name:'الأدب والجاذبية', prob:'العناية بالنفس والصوت والكلمات',
+  mirror:[['أهتم بمظهري في البيت، لا في الخارج فقط.',5],['أقول «شكراً» لعائلتي يومياً.',5],['أستخدم السخرية عندما أنزعج.',1]],
+  learn:[
+   {q:'سنن الفطرة تشمل:',o:['تقليم الأظافر، وإزالة الشعر، والسواك','العطر فقط','الملابس فقط'],a:0,e:'النظافة الشخصية جزء من الإيمان ومن الجاذبية.'},
+   {q:'كان ابن عباس رضي الله عنهما يتزيّن لزوجته لأنه:',o:['ينتظر ضيوفاً','يحب أن تتزيّن له','كان يوم عيد'],a:1,e:'الجاذبية يحافظ عليها الطرفان كل يوم.'},
+   {q:'ما الذي يقع في قائمة الكلمات الممنوعة؟',o:['«شكراً»','مقارنة شريكك بشخص آخر','ألقاب التدليل'],a:1,e:'المقارنات تجرح بعمق ونادراً ما تُنسى.'}],
+  play:[
+   {who:'شريكك يصل متأخراً',s:'اختر الترحيب الألطف:',o:[['«متأخر مرة أخرى؟!»',0],['«لا يهم.»',3],['«اشتقت إليك. هل كل شيء بخير؟»',15]],e:'النبرة تحدد الساعة التالية من المساء.'},
+   {who:'أمر حساس',s:'رائحة فم شريكك تزعجك.',o:[['تذكر ذلك أمام الآخرين.',0],['تتجنب القرب بصمت.',4],['كلمة لطيفة على انفراد، مع هدية من حلوى النعناع.',15]],e:'لطيف، وعلى انفراد، وعملي. دون إحراج.'}],
+  mission:'سلسلة 14 يوماً: عناية يومية بالمظهر و3 كلمات لطيفة لعائلتك.',
+  hus:'العناية بالمظهر، وصوت هادئ، ومجاملات، ومساعدة في البيت.', wif:'العناية بالمظهر في البيت، واستقبال دافئ، وتقدير جهده.'},
+
+ {name:'البيت الدافئ', prob:'أجواء البيت وآدابه',
+  mirror:[['بيتي يبدو هادئاً ومرحِّباً عندما يصل الضيوف.',5],['ألاحظ الرائحة والإضاءة والترتيب في المكان.',5],['أُدخل ضغوط الخارج إلى البيت.',1]],
+  learnW:[
+   {q:'أسرع طريقة لجعل البيت هادئاً في المساء:',o:['إضاءة سقف قوية والتلفاز يعمل','مصابيح دافئة، وإضاءة خافتة، وبخور أو رائحة منعشة','كل شخص في غرفة'],a:1,e:'الضوء الدافئ والرائحة الطيبة يغيّران مزاج البيت في دقائق.'},
+   {q:'عند زيارة الضيوف، المضيفة الأنيقة:',o:['تخدم نفسها أولاً','تستقبلهم عند الباب، وتقدم القهوة والتمر، وتبدأ بالكبار','تعرض الصور على هاتفها'],a:1,e:'في تقاليدنا الضيف مُكرَّم: الكبار أولاً، والقهوة باليد اليمنى، والابتسامة دائماً.'},
+   {q:'تحسين للديكور بميزانية صغيرة وأثر كبير:',o:['أريكة جديدة','التخلص من الفوضى، ووسائد، ونباتات، ولوحة واحدة','أثاث أكثر'],a:1,e:'قلة الفوضى مع لمسات من القماش والخضرة أفضل من الأثاث الغالي.'}],
+  learnH:[
+   {q:'عند العودة إلى البيت بعد يوم صعب، أفضل عادة:',o:['الشكوى من العمل أولاً','السلام، والابتسامة، و10 دقائق من الاهتمام قبل الهاتف','الذهاب مباشرة إلى التلفاز'],a:1,e:'أول 3 دقائق عند الباب تحدد أجواء المساء كله.'},
+   {q:'عند زيارة الضيوف، المضيف الجيد:',o:['يجلس وزوجته تقوم بكل شيء','يستقبلهم واقفاً، ويساعد في الضيافة، ويرافقهم إلى الباب عند المغادرة','يغادر مبكراً'],a:1,e:'الضيافة مشتركة، ومرافقة الضيف إلى الباب من آداب الضيافة.'},
+   {q:'يساهم الزوج في أجواء البيت عندما:',o:['لا يفعل شيئاً، فهذه مهمتها','يصلح الإضاءة، ويرتب مكانه، ويحضر الزهور أو النباتات','يشتري تلفازاً أكبر'],a:1,e:'البيت الدافئ يبنيه الاثنان.'}],
+  playW:[
+   {who:'ضيوف مفاجئون',s:'والداه يتصلان: سيصلان بعد 30 دقيقة.',o:[['تتوترين وتشتكين له.',0],['تطلبين منه أن يقول إنك لست في البيت.',2],['ترتيب سريع في 10 دقائق، وبخور، وقهوة وتمر جاهزة، وابتسامة.',15]],e:'خطة ترتيب سريعة وهادئة تجعل الزيارات المفاجئة سهلة.'},
+   {who:'المساء',s:'البيت متوتر وصاخب بعد العمل.',o:[['تصرخين طلباً للهدوء.',0],['تذهبين إلى غرفتك وحدك.',5],['تخفيف الإضاءة، وقرآن أو موسيقى هادئة، وشاي لكما.',15]],e:'يمكنك تغيير المزاج بتغيير المكان.'}],
+  playH:[
+   {who:'الليلة',s:'أصدقاؤك يريدون الزيارة الليلة، وزوجتك متعبة.',o:[['توافق دون سؤالها.',0],['ترفض أصدقاءك بفظاظة.',4],['تسألها أولاً، ثم تعرض أن تطلب الطعام وتتولى الضيافة.',15]],e:'بيتها وطاقتها: اسأل أولاً، ثم احمل العبء.'},
+   {who:'في البيت',s:'مصباح غرفة الجلوس معطّل منذ أسبوعين.',o:[['تنتظر أن تتصل هي بفني.',0],['تشتري مصباحاً جديداً وتترك القديم.',6],['تصلحه هذا الأسبوع، أو تتصل بفني بنفسك.',15]],e:'الإصلاحات الصغيرة السريعة تقول «أنا أهتم ببيتنا».'}],
+  mission:'اختر تحدياً منزلياً لهذا الأسبوع:',
+  missionOptsW:['جهّزي ركناً هادئاً: مصباح، ووسادة، ونبتة، ورائحة.','استضيفي زيارة صغيرة بالقهوة والتمر بكامل آدابها.','تخلّصي من الفوضى في غرفة واحدة لمدة 20 دقيقة.','تعلّمي آداب تقديم القهوة العربية.'],
+  missionOptsH:['تدرّب على وصول الدقائق الثلاث: سلام، وابتسامة، واهتمام.','استضف أصدقاءك ورافقهم إلى الباب.','تولَّ ترتيب ركن واحد من البيت.','أصلح شيئاً صغيراً ينتظر منذ مدة.'],
+  hus:'بيت الرجل الكريم يبدأ عند الباب: سلام، وابتسامة، ويد تساعد.', wif:'أناقة السيدة: هدوء، ودفء، وبيت مرحِّب.'},
+
+ {name:'أيدٍ ماهرة', prob:'الطبخ والخياطة والإصلاح والأعمال الثقيلة',
+  mirror:[['أستطيع طبخ وجبة كاملة للضيوف.',5],['أستطيع إصلاح الأشياء الصغيرة في البيت.',5],['أتصل بأحد لكل إصلاح أو مهمة صغيرة.',1]],
+  learnW:[
+   {q:'أذكى دورة طبخ تبدئين بها:',o:['تزيين الكيك','الأساسيات: التقطيع، والأرز، ويخنة، وشوربة، وطبق عائلي','السوشي'],a:1,e:'خمسة أطباق موثوقة تكفي لمعظم ليالي الأسبوع.'},
+   {q:'مهارة خياطة يحتاجها كل بيت:',o:['تفصيل فستان','تركيب زر وإصلاح حاشية','التطريز'],a:1,e:'إصلاحات العشر دقائق توفر الملابس والمال.'},
+   {q:'يصبح عشاء أيام الأسبوع أسهل عندما:',o:['تطبخين يومياً دون خطة','تخططين للأسبوع، وتتسوقين مرة، وتطبخين كميات في العطلة','تطلبين كل ليلة'],a:1,e:'الطبخ المسبق يحرر أمسياتكما لبعضكما.'}],
+  learnH:[
+   {q:'صندوق العُدّة الأساسي للبيت فيه:',o:['مطرقة فقط','مفكات، وكماشة، ومثقاب، وشريط قياس، وميزان استواء، وكاشف كهرباء','لا شيء، اتصل بالعامل'],a:1,e:'معظم الإصلاحات الصغيرة تحتاج هذه الأدوات الست فقط.'},
+   {q:'قبل لمس أي تمديد كهربائي:',o:['كن سريعاً فقط','افصل القاطع وتأكد من انقطاع التيار','أطفئ مفتاح الحائط فقط'],a:1,e:'السلامة أولاً. للأعمال الكهربائية الكبيرة استعن بفني مرخّص.'},
+   {q:'نقل الأثاث الثقيل بأمان:',o:['احنِ ظهرك وارفع بسرعة','اثنِ ركبتيك، وأبقِ الحمل قريباً، واستعن بشخص آخر أو عربة','اسحبه على البلاط'],a:1,e:'ارفع بقوة ساقيك، واحمِ الأرضية وظهرك.'}],
+  playW:[
+   {who:'ليلة عادية',s:'وصلتما البيت جائعين في السابعة مساءً.',o:[['تتخطيان العشاء.',0],['تطلبين طعاماً مرة أخرى.',5],['تسخنين طبقاً من طبخ يوم السبت في 20 دقيقة.',15]],e:'قليل من التخطيط يحوّل المساء المتوتر إلى مساء هادئ.'},
+   {who:'قبل الخروج',s:'سقط زر من قميصه.',o:[['تضحكين وتتركينه.',0],['تقولين له أن يلبس قميصاً آخر.',8],['تخيطينه في 3 دقائق.',15]],e:'مهارات صغيرة، وتقدير كبير.'}],
+  playH:[
+   {who:'يوم السبت',s:'صنبور المطبخ يقطر منذ أسبوع.',o:[['تتجاهله.',0],['تشتكي إلى المالك الشهر القادم.',5],['تغيّر الجلدة أو الخرطوشة بنفسك مع فيديو إرشادي.',15]],e:'إصلاحه في الأسبوع نفسه يُظهر أنك أهل للاعتماد.'},
+   {who:'يوم الانتقال',s:'تنتقلان إلى شقة جديدة.',o:[['تترك زوجتك تحمل الصناديق وحدها.',0],['تستأجر عمال نقل وتختفي.',6],['تحمل الأشياء الثقيلة، وتركّب الأثاث، وتعلّق الستائر والتلفاز.',15]],e:'الأعمال الثقيلة وصندوق العُدّة مسؤوليتك.'}],
+  mission:'اختر تحدي مهارة لهذا الأسبوع:',
+  missionOptsW:['سجّلي في دورة طبخ (أساسيات أو أطباق عائلية).','تعلّمي تركيب زر وإصلاح حاشية.','اطبخي وجبة من 3 أطباق لعائلتك.','خطّطي وجبات أسبوع واطبخي كميات مرة واحدة.'],
+  missionOptsH:['جهّز صندوق عُدّة البيت بالأدوات الست.','أصلح صنبوراً يقطر، أو مقبضاً مرتخياً، أو مفصلة باب.','ركّب قطعة أثاث بنفسك.','اطبخ طبقاً واحداً لعائلتك؛ فالمهارات الأساسية مشتركة.'],
+  hus:'الإصلاحات والأعمال الثقيلة والسيارة مسؤوليتك، وتعلّم أساسيات الطبخ أيضاً.', wif:'مهارات المطبخ والخياطة والديكور، واعرفي أيضاً مكان قاطع الكهرباء.'}
+];
+
+const BOSS_AR = [
+ ['الحمام المشترك','الأسبوع الأول: شريكك يترك الحمام مبللاً والمناديل على الأرض.',[['تشتكي بقسوة.',0],['تذكر الأمر بلطف مرة واحدة وتتفقان معاً على قواعد بسيطة للحمام.',2],['تنظفه بصمت وتحمل في قلبك.',1]]],
+ ['أول خلاف','خلاف صغير حول الوقت مع الأصدقاء يعلو صوته.',[['تطلب استراحة 20 دقيقة ثم تعودان للحديث.',2],['تحاول الفوز بالنقاش.',0],['تترك الأمر ولا تناقشه أبداً.',1]]],
+ ['زيارة الأهل','أحد الوالدين ينتقد شريكك على العشاء.',[['تبقى صامتاً.',1],['تدافع عن شريكك بدفء واحترام.',2],['تشارك في المزاح.',0]]],
+ ['نقص المال','ينتهي الشهر بعجز 2,000 درهم.',[['تلومان بعضكما.',0],['تقترض بصمت من العائلة.',1],['تجلسان وتراجعان الميزانية وتخفّضان معاً.',2]]],
+ ['غيرة الهاتف','يسألك شريكك مع من كنت تراسل في وقت متأخر.',[['تعرض المحادثة بهدوء وتتفقان على قاعدة.',2],['تتخذ موقفاً دفاعياً.',0],['تعرضها لكنك تعبس.',1]]],
+ ['رمضان','كلاكما متعب، وإفطار كل ليلة، وزيارات عائلية.',[['تتقاسمان الطبخ والزيارات وفق خطة.',2],['شخص واحد يقوم بكل شيء.',0],['تطلبان الطعام طوال الشهر.',1]]],
+ ['فقدان العمل','أحدكما يفقد عمله.',[['يخفي الأمر لفترة.',0],['يخبر الآخر في اليوم نفسه وتضعان خطة بمواعيد.',2],['يترك الآخر يدفع دون خطة.',1]]],
+ ['خبر الحمل','خبر مفرح ومخيف في الوقت نفسه.',[['تخططان معاً: المال، والإجازة، والأدوار.',2],['تخبران العائلتين قبل أن تتحدثا معاً.',0],['تنتظران لتريا.',1]]],
+ ['الإرهاق','العمل والبيت لا يتركان وقتاً لكما.',[['تحجزان أمسية أسبوعية لكما.',2],['تتقبلان الأمر، فهذا طبيعي.',1],['تشتكي إلى الأصدقاء.',0]]],
+ ['العيد','العائلتان تنتظرانكما في اليوم الأول.',[['تلتزمان بالتناوب المتفق عليه.',2],['من يصرخ أكثر يفوز.',0],['يذهب كل منكما وحده.',1]]],
+ ['إغراء في العمل','زميل أو زميلة يصبح ودوداً جداً.',[['تستمتع بالاهتمام، لا ضرر فيه.',0],['تضع حدوداً وتخبر شريكك.',2],['تتجنبه لكن تبقي الأمر سراً.',1]]],
+ ['الذكرى السنوية','عام كامل معاً.',[['تراجعان السنة: ما نجح وما يجب تحسينه.',2],['هدية غالية بلا حديث.',1],['تنسى المناسبة.',0]]]
+];
+
+/* ---------- gender-specific overlays (index = module position) ---------- */
+const GEN_EN = {
+ 0:{H:{mirror:[['I lift the seat, put it down after, and leave the floor dry.',5],['I leave beard or shaving hair in the sink.',1],['I brush my teeth before bed every night.',5]],
+      play:[{who:'Morning rush',s:'You are late. The sink has shaving hair and toothpaste in it, and your towel is on the floor.',o:[['Leave it, there is no time.',0],['Leave it and promise to clean later.',4],['Take 60 seconds: rinse the sink and hang the towel.',15]],e:'The one-minute rule: if it takes less than a minute, do it now.'},
+            {who:'Bedtime',s:'The bedroom has gym clothes on the chair, socks on the floor, and a stuffy smell.',o:[['Sleep, it is fine.',0],['Spray perfume over the mess.',5],['5-minute reset: clothes in the basket, socks away, window open, fresh scent, teeth brushed.',15]],e:'A tidy, fresh bedroom invites closeness. A messy one pushes it away.'}]},
+    W:{mirror:[['I clean hair from the drain and sink after I use them.',5],['I leave make-up, products or tissues out after I use them.',1],['I brush my teeth before bed every night.',5]],
+      play:[{who:'Morning rush',s:'You are late. There is hair in the drain, and your products cover the whole counter.',o:[['Leave it, there is no time.',0],['Leave it and promise to clean later.',4],['Take 60 seconds: clear the drain and put the products back.',15]],e:'The one-minute rule: if it takes less than a minute, do it now.'},
+            {who:'Bedtime',s:'The bedroom has clothes on the chair, tissues by the bed, and a stuffy smell.',o:[['Sleep, it is fine.',0],['Spray perfume over the mess.',5],['5-minute reset: clothes away, tissues in the bin, window open, fresh scent, teeth brushed.',15]],e:'A tidy, fresh bedroom invites closeness. A messy one pushes it away.'}]}},
+ 2:{H:{mirror:[['When my fiancée complains, I jump in with solutions or defend myself.',1],['I can repeat back what someone said before I reply.',5],['When I am upset, I raise my voice.',1]],
+      play:[{who:'Your wife',s:'"You came home late again and didn\'t call!"',o:[['"I was working for us!"',0],['"Sorry."',8],['"You were worried because I didn\'t call. You\'re right, I\'ll text next time."',15]],e:'Repeat + validate + a concrete fix ends the fight in one sentence.'},
+            {who:'Your wife',s:'"You\'re always on your phone when I talk to you."',o:[['"So are you!"',0],['"Okay, fine."',5],['Put the phone down: "You feel ignored. Tell me, I\'m listening now."',15]],e:'Action first (phone down), then name her feeling.'}]},
+    W:{mirror:[['When my fiancé goes quiet, I push him to talk right away.',1],['I can repeat back what someone said before I reply.',5],['I expect him to guess what I need without saying it.',1]],
+      play:[{who:'Your husband',s:'"You never let me rest when I come home from work!"',o:[['"And what about my rest?!"',0],['"Fine, I won\'t talk then."',5],['"You need some quiet when you arrive. Take 20 minutes, then let\'s talk."',15]],e:'Repeat + validate + a concrete fix ends the fight in one sentence.'},
+            {who:'Your husband',s:'"You\'re always on your phone when I talk to you."',o:[['"So are you!"',0],['"Okay, fine."',5],['Put the phone down: "You feel ignored. Tell me, I\'m listening now."',15]],e:'Action first (phone down), then name his feeling.'}]}},
+ 3:{H:{mirror:[['My family would describe me exactly as I describe myself.',5],['I act more generous or patient than I really am to impress her family.',1],['I can name my 3 worst habits.',5]],
+      play:[{who:'Your fiancée',s:'"What are you like when you\'re angry?"',o:[['"I never get angry."',0],['"It depends."',5],['"I go quiet for an hour and need space. Then I\'m ready to talk."',15]],e:'A specific, honest answer gives her a map.'},
+            {who:'After a long workday',s:'You are tired and hungry. Your wife asks about weekend plans.',o:[['Snap: "Not now!"',0],['Ignore her and scroll your phone.',3],['"I need 15 minutes to reset, then I\'m all yours."',15]],e:'Naming your state protects your wife from your worst side.'}]},
+    W:{mirror:[['My family would describe me exactly as I describe myself.',5],['I hide my real moods or habits to impress him and his family.',1],['I can name my 3 worst habits.',5]],
+      play:[{who:'Your fiancé',s:'"What are you like when you\'re stressed?"',o:[['"I\'m always calm."',0],['"It depends."',5],['"I get short-tempered and need a little quiet, then I\'m fine. A kind word helps."',15]],e:'A specific, honest answer gives him a map.'},
+            {who:'After a long day',s:'You are tired and hungry. Your husband asks about weekend plans.',o:[['Snap: "Not now!"',0],['Ignore him and scroll your phone.',3],['"I need 15 minutes to reset, then I\'m all yours."',15]],e:'Naming your state protects your husband from your worst side.'}]}},
+ 4:{H:{mirror:[['I know my non-negotiables in a wife.',5],['Looks or family status matter more to me than her character and deen.',1],['I have met her family and seen how she handles stress.',5]],
+      play:[{who:'A family visit',s:'She is beautiful and polite with you, but speaks rudely to her housemaid twice.',o:[['Ignore it. She is nice to me.',0],['Tell everyone what happened.',3],['Note it as a red flag and observe more before deciding.',15]],e:'One sign is data, not a verdict. Keep watching how she treats others.'},
+            {who:'Your mother',s:'Your mother pushes a bride who doesn\'t share your non-negotiables.',o:[['Accept to please her.',0],['Refuse rudely.',4],['Thank her, explain your 5 non-negotiables respectfully, and ask for time.',15]],e:'Clear values let you say no with respect.'}],
+      mission:'Write one page: "My ideal wife" on the left, "My non-negotiables" on the right.'},
+    W:{mirror:[['I know my non-negotiables in a husband.',5],['His money or status matter more to me than his character and deen.',1],['I have seen how he handles stress, money and his family.',5]],
+      play:[{who:'A meeting',s:'He is charming and generous with you, but insults the waiter twice.',o:[['Ignore it. He is nice to me.',0],['Tell everyone what happened.',3],['Note it as a red flag and observe more before deciding.',15]],e:'One sign is data, not a verdict. Keep watching how he treats others.'},
+            {who:'Your family',s:'Your family pushes a suitor who doesn\'t share your non-negotiables.',o:[['Accept to please them.',0],['Refuse rudely.',4],['Explain your 5 non-negotiables respectfully and ask for time.',15]],e:'Clear values let you say no with respect.'}],
+      mission:'Write one page: "My ideal husband" on the left, "My non-negotiables" on the right.'}},
+ 5:{H:{mirror:[['I would be comfortable if my wife read my chats.',5],['I use my phone during meals.',1],['I follow or chat with women online in ways my wife would dislike.',1]],
+      play:[{who:'A female colleague, 00:12',s:'"Good night 😊" from a female colleague.',o:[['Reply warmly.',0],['Delete it secretly.',4],['Don\'t reply, keep work talk to work hours, and mention it to your wife.',15]],e:'Transparency removes the secret before it can grow.'},
+            {who:'Your wife',s:'"Can I see that chat?"',o:[['Refuse angrily.',0],['Show it, but sulk all evening.',7],['Show it calmly.',15]],e:'Calm openness builds more trust than any password.'}]},
+    W:{mirror:[['I would be comfortable if my husband read my chats.',5],['I use my phone during meals.',1],['I compare my life with couples on Instagram.',1]],
+      play:[{who:'A male colleague, 00:12',s:'"Good night 😊" from a male colleague.',o:[['Reply warmly.',0],['Delete it secretly.',4],['Don\'t reply, keep work talk to work hours, and mention it to your husband.',15]],e:'Transparency removes the secret before it can grow.'},
+            {who:'Your husband',s:'"Can I see that chat?"',o:[['Refuse angrily.',0],['Show it, but sulk all evening.',7],['Show it calmly.',15]],e:'Calm openness builds more trust than any password.'}]}},
+ 6:{H:{mirror:[['I know exactly what I owe (loans, cards).',5],['I would hide a debt from my future wife.',1],['I have savings for emergencies.',5]],
+      play:[{who:'A hard week',s:'You lose your job.',o:[['Hide it and pretend to go to work.',0],['Let your wife pay for everything, with no time limit.',3],['Tell your wife the same day and agree a plan with deadlines.',15]],e:'Honesty + a time-boxed plan protects both your dignity and the marriage.'},
+            {who:'Before the wedding',s:'Her family wants a big wedding. Your savings are limited.',o:[['Take a loan for the big wedding.',2],['Cancel any celebration against everyone\'s wishes.',7],['Agree respectfully on a wedding and mahr within your savings.',15]],e:'Starting in debt is one of the fastest routes to early conflict.'}]},
+    W:{mirror:[['I know exactly what I owe (loans, cards).',5],['I would hide a debt or big spending from my future husband.',1],['I keep savings of my own for emergencies.',5]],
+      play:[{who:'A hard week',s:'Your husband loses his job and feels ashamed.',o:[['Remind him that you are paying for everything now.',0],['Pay for everything quietly, with no plan or time limit.',3],['Support him kindly, agree a written plan with deadlines, and decide together if your help is a gift or a loan.',15]],e:'Kindness plus a clear plan protects his dignity and your rights.'},
+            {who:'Before the wedding',s:'Your family wants a big wedding and a high mahr. His savings are limited.',o:[['Insist, for appearances.',2],['Cancel any celebration against everyone\'s wishes.',7],['Agree on a wedding and mahr within his means.',15]],e:'Starting in debt is one of the fastest routes to early conflict.'}]}},
+ 7:{H:{mirror:[['I would feel uncomfortable if my wife earned much more than me.',1],['Big decisions should be made together with my wife.',5],['I have used money as a weapon in an argument.',1]],
+      play:[{who:'Big news',s:'Your wife is offered a promotion in another country.',o:[['Forbid it immediately.',0],['Let her decide alone; you don\'t care.',2],['Sit together and weigh family, careers, and children, then decide jointly.',15]],e:'Joint decisions survive bad outcomes; one-sided ones don\'t.'},
+            {who:'Mid-argument',s:'She earns more, and you feel like saying: "Don\'t think your salary makes you the boss!"',o:[['Say it.',0],['Leave the room.',6],['"Let\'s talk about the decision, not about salaries."',15]],e:'Money used as a weapon wounds for years.'}],
+      mission:'Write a short letter: "What I respect about my future wife beyond money."'},
+    W:{mirror:[['I would respect my husband less if he earned less than me.',1],['Big decisions should be made together with my husband.',5],['I have used money as a weapon in an argument.',1]],
+      play:[{who:'Big news',s:'You are offered a promotion in another country.',o:[['Accept without discussing it.',0],['Refuse silently and resent it.',4],['Sit together and weigh family, careers, and children, then decide jointly.',15]],e:'Joint decisions survive bad outcomes; one-sided ones don\'t.'},
+            {who:'Mid-argument',s:'You feel like saying: "It\'s MY money paying for this house!"',o:[['Say it.',0],['Leave the room.',6],['"Let\'s talk about the decision, not whose salary it is."',15]],e:'Money used as a weapon wounds for years.'}],
+      mission:'Write a short letter: "What I respect about my future husband beyond money."'}},
+ 8:{H:{mirror:[['I tell my family about problems with my wife.',1],['I can say no to my mother respectfully.',5],['My mother\'s opinion outweighs my wife\'s in our home.',1]],
+      play:[{who:'Your mother',s:'"Your wife doesn\'t cook like me."',o:[['Agree, laughing.',0],['Say nothing, then tell your wife later.',3],['"She does her best and I\'m happy, Mama. Teach us your recipe sometime!"',15]],e:'Defend your wife warmly, without attacking your mother.'},
+            {who:'Online',s:'Your sister shares details of your private argument with your wife.',o:[['Confront her publicly.',2],['Ignore it.',5],['Talk to your sister privately, and agree a privacy rule with your wife.',15]],e:'Private problems stay private, and each spouse handles their own family.'}]},
+    W:{mirror:[['I tell my family about problems with my husband.',1],['I can say no to my parents respectfully.',5],['I speak badly about his family when I am upset.',1]],
+      play:[{who:'His mother',s:'"My son used to eat better before he married."',o:[['Answer back sharply.',0],['Smile, then complain to your husband angrily.',3],['Smile: "Teach me his favourite dish, Khalto!" and keep the moment warm.',15]],e:'Respect his mother in front of everyone; raise real issues calmly and privately with your husband.'},
+            {who:'Your mother',s:'Your mother asks for every detail of your first argument with your husband.',o:[['Tell her everything.',0],['Tell her a little and complain.',4],['"We sorted it, Mama. Pray for us." Keep it private.',15]],e:'Private problems stay private, and each spouse handles their own family.'}]}},
+ 9:{H:{mirror:[['I can cook at least 3 dishes.',5],['I notice what needs doing at home without being asked.',5],['Housework is mainly the wife\'s job, even if she works too.',1]],
+      play:[{who:'7pm, both just home',s:'You both worked all day. Nobody has started dinner.',o:[['Sit and wait for your wife to start.',0],['Order food every night.',6],['One cooks, the other does the dishes, as you planned together on Friday.',15]],e:'A weekly plan removes the daily negotiation.'},
+            {who:'Again',s:'Your wife reminds you for the third time about the laundry you promised to do.',o:[['"Stop nagging!"',0],['Do it with a sulky face.',5],['"You\'re right, sorry." Do it now and add it to your weekly list.',15]],e:'A promise kept is worth more than a perfect excuse.'}]},
+    W:{mirror:[['I can plan and run a home week by week.',5],['I ask for help clearly instead of hinting.',5],['I do everything myself, then resent it silently.',1]],
+      play:[{who:'7pm, both just home',s:'You both worked all day. Nobody has started dinner.',o:[['Wait for him to offer.',0],['Do everything yourself and complain later.',4],['Ask clearly: "I\'ll cook, can you do the dishes and the kids?" as planned on Friday.',15]],e:'Clear requests beat silent expectations.'},
+            {who:'Again',s:'Your husband forgot his chores for the third time.',o:[['Shout about it.',0],['Do it silently and resent it.',4],['Raise it calmly at the weekly meeting and adjust the plan.',15]],e:'Silent resentment builds; a calm meeting fixes the system.'}],
+      mission:'Learn 3 new dishes, or plan a full week of home tasks and share it.'}},
+ 10:{H:{mirror:[['I make decisions when I am angry.',1],['I apologise to my fiancée or family without excuses.',5],['Small things ruin my whole day.',1]],
+      play:[{who:'Dinner',s:'Dinner burnt. Everyone is hungry.',o:[['Complain loudly.',0],['Silent face all evening.',5],['"It\'s okay. Let\'s order and laugh about it."',15]],e:'Rate it 1 to 10: is this worth a fight? Usually it\'s a 2.'},
+            {who:'Mid-fight',s:'You feel rage rising, and the word "talaq" is on your tongue.',o:[['Say it.',0],['Leave the house for the night.',3],['"I need 20 minutes. I\'ll come back and we\'ll finish this."',15]],e:'Pause and promise to return. Never let talaq be a word of anger.'}]},
+    W:{mirror:[['I make decisions when I am upset.',1],['I apologise without excuses.',5],['I bring up old mistakes again in new arguments.',1]],
+      learn:[
+       {q:'The Sunnah when angry:',o:['Speak your mind immediately','Sit down, make wudu, change your place','Leave the house'],a:1,e:'Changing posture and making wudu physically lowers anger.'},
+       {q:'Saying "Divorce me!" in anger is:',o:['Harmless; he knows I don\'t mean it','Serious; the Prophet ﷺ warned against asking for divorce without a real reason','A normal way to win an argument'],a:1,e:'A hadith in Abu Dawud and at-Tirmidhi warns against asking for divorce without a real cause. Never use it as a threat.'},
+       {q:'The time-out rule:',o:['Stop for 20 minutes, then come back','Stop talking for days','Win first, then stop'],a:0,e:'A time-out works only if you return to finish the talk.'}],
+      play:[{who:'Dinner',s:'Dinner burnt. Everyone is hungry.',o:[['Complain loudly.',0],['Silent face all evening.',5],['"It\'s okay. Let\'s order and laugh about it."',15]],e:'Rate it 1 to 10: is this worth a fight? Usually it\'s a 2.'},
+            {who:'Mid-fight',s:'You feel rage rising and want to say "Divorce me!"',o:[['Say it.',0],['Leave for your parents\' house.',3],['"I need 20 minutes. Then let\'s finish this calmly."',15]],e:'Pause and promise to return. Never use divorce as a threat.'}]}},
+ 11:{H:{mirror:[['I groom and dress nicely at home, not only outside.',5],['I compliment the women in my family sincerely.',5],['I use sarcasm when I am annoyed.',1]],
+      play:[{who:'Your wife arrives late',s:'Pick the kinder greeting:',o:[['"Late AGAIN?!"',0],['"Whatever."',3],['"I missed you. Is everything okay?"',15]],e:'Tone decides the next hour of the evening.'},
+            {who:'A delicate moment',s:'Your wife asks: "Do you like my new dress?" You don\'t, much.',o:[['"Not really, it looks bad."',0],['"It\'s fine."',4],['"You look lovely in anything. My favourite on you is the blue one."',15]],e:'Kind honesty: lead with love, then steer gently.'}]},
+    W:{mirror:[['I dress nicely at home, not only outside.',5],['I say thank you to my family daily.',5],['I use sarcasm when I am annoyed.',1]],
+      play:[{who:'Your husband arrives late',s:'Pick the kinder greeting:',o:[['"Late AGAIN?!"',0],['"Whatever."',3],['"I missed you. Is everything okay?"',15]],e:'Tone decides the next hour of the evening.'},
+            {who:'A delicate issue',s:'Your husband\'s breath bothers you.',o:[['Mention it in front of others.',0],['Avoid closeness silently.',4],['A gentle private word, with a gift of mints.',15]],e:'Kind, private, practical. Never shaming.'}]}}
+};
+
+const GEN_AR = {
+ 0:{A:{learn:[
+     {q:'بعد استخدام الحمام، العادة الصحيحة:',o:['تركه لعاملة التنظيف','الشطف، ومسح المقعد والأرض، وإنزال الغطاء، وغسل اليدين، وإعادة المنشفة مكانها','الشطف فقط'],a:1,e:'كل مكان يُترك نظيفاً كما وُجد أو أنظف، فمن يستخدمه بعدك هو من تحب.'},
+     {q:'قال النبي ﷺ إن الطُّهور:',o:['أمر اختياري','شطر الإيمان','للصلاة فقط'],a:1,e:'«الطُّهور شطر الإيمان» (رواه مسلم). النظافة في البيت جزء من الدين، لا من الآداب فقط.'},
+     {q:'قبل النوم، أفضل عادة:',o:['الذهاب إلى السرير مباشرة','تنظيف الأسنان أو السواك، والوضوء، والنوم في سرير نظيف ومنعش','وجبة خفيفة متأخرة في السرير'],a:1,e:'كان النبي ﷺ يستاك إذا قام من الليل. الفم المنعش والسرير النظيف يجعلان غرفة النوم مكان راحة.'}]},
+    H:{mirror:[['أرفع مقعد المرحاض ثم أُنزله، وأترك الأرض جافة.',5],['أترك شعر الحلاقة أو اللحية في المغسلة.',1],['أنظّف أسناني قبل النوم كل ليلة.',5]],
+      play:[{who:'صباح مستعجل',s:'أنت متأخر. في المغسلة شعر حلاقة ومعجون أسنان، ومنشفتك على الأرض.',o:[['تتركها، لا وقت.',0],['تتركها وتعد بتنظيفها لاحقاً.',4],['تأخذ 60 ثانية: تشطف المغسلة وتعلّق المنشفة.',15]],e:'قاعدة الدقيقة الواحدة: ما يأخذ أقل من دقيقة، افعله الآن.'},
+            {who:'وقت النوم',s:'في غرفة النوم ملابس الرياضة على الكرسي، وجوارب على الأرض، ورائحة خانقة.',o:[['تنام، لا بأس.',0],['ترش عطراً فوق الفوضى.',5],['ترتيب في 5 دقائق: الملابس في السلة، والجوارب في مكانها، ونافذة مفتوحة، ورائحة طيبة، وتنظيف الأسنان.',15]],e:'غرفة النوم المرتبة المنعشة تقرّب، والفوضى تُبعد.'}]},
+    W:{mirror:[['أنظّف الشعر من المصرف والمغسلة بعد استخدامهما.',5],['أترك مستحضرات التجميل أو المناديل في مكانها بعد الاستخدام.',1],['أنظّف أسناني قبل النوم كل ليلة.',5]],
+      play:[{who:'صباح مستعجل',s:'أنتِ متأخرة. في المصرف شعر، ومستحضراتك تملأ سطح المغسلة.',o:[['تتركينها، لا وقت.',0],['تتركينها وتعدين بتنظيفها لاحقاً.',4],['تأخذين 60 ثانية: تنظّفين المصرف وتعيدين المستحضرات مكانها.',15]],e:'قاعدة الدقيقة الواحدة: ما يأخذ أقل من دقيقة، افعليه الآن.'},
+            {who:'وقت النوم',s:'في غرفة النوم ملابس على الكرسي، ومناديل بجانب السرير، ورائحة خانقة.',o:[['تنامين، لا بأس.',0],['ترشّين عطراً فوق الفوضى.',5],['ترتيب في 5 دقائق: الملابس في مكانها، والمناديل في السلة، وهواء نقي، ورائحة طيبة، وتنظيف الأسنان.',15]],e:'غرفة النوم المرتبة المنعشة تقرّب، والفوضى تُبعد.'}],
+      mission:'اختاري تحدياً لمدة 7 أيام:',
+      missionOpts:['اتركي الحمام نظيفاً تماماً بعد كل استخدام.','نظّفي أسنانك (أو استعملي السواك) كل ليلة قبل النوم.','رتّبي غرفة النوم 5 دقائق كل مساء: ترتيب، وسلة، وهواء نقي، ورائحة طيبة.','لا تتركي أثراً خلفك: لا مناديل ولا أكواب ولا ملابس متروكة في أي مكان.','ابتسمي لعائلتك كل صباح: «تبسّمك في وجه أخيك صدقة».']}},
+ 1:{W:{mission:'اختاري تحدياً أخلاقياً لمدة 7 أيام:'}},
+ 2:{A:{learn:[
+     {q:'ماذا تعني طريقة «اسمع، أعِد، تفهَّم»؟',o:['اسمع، رُدّ، تحقّق','اسمع، أعِد ما سمعته، تفهَّم الشعور','انظر، استجب، قدِّر'],a:1,e:'الإصغاء دون مقاطعة، ثم إعادة ما سُمع، ثم إظهار فهم الشعور. بعدها فقط يأتي الرد.'},
+     {q:'أي جملة تُعد بداية لطيفة للحديث؟',o:['«أنت لا تساعدني أبداً!»','«لماذا أنا دائماً من يفعل كل شيء؟»','«أشعر بالتعب الليلة، هل يمكن أن تتولى الصحون؟»'],a:2,e:'البداية اللطيفة تذكر الشعور وطلباً محدداً، فتدعو إلى المساعدة لا إلى الدفاع.'},
+     {q:'تفهُّم مشاعر الشريك يعني:',o:['الموافقة على كل ما يقول','إظهار أن شعوره مفهوم حتى مع رؤية الأمر بشكل مختلف','الصمت حتى يهدأ'],a:1,e:'يمكن الاختلاف في الوقائع مع قول: «أفهم لماذا تشعر بذلك».'}]},
+    H:{mirror:[['عندما تشتكي خطيبتي، أسارع إلى الحلول أو أدافع عن نفسي.',1],['أستطيع أن أعيد ما قاله الآخر قبل أن أرد.',5],['عندما أنزعج، أرفع صوتي.',1]],
+      play:[{who:'زوجتك',s:'«تأخرت مرة أخرى ولم تتصل!»',o:[['«كنت أعمل من أجلنا!»',0],['«آسف.»',8],['«أفهم أنكِ قلقتِ لأني لم أتصل. معكِ حق، سأرسل رسالة في المرة القادمة.»',15]],e:'إعادة الكلام + تفهّم الشعور + حل عملي = نهاية الخلاف بجملة واحدة.'},
+            {who:'زوجتك',s:'«أنت دائماً على الهاتف عندما أكلمك.»',o:[['«وأنتِ أيضاً!»',0],['«حسناً.»',5],['تضع الهاتف جانباً: «تشعرين أني أتجاهلك. تكلمي، أنا أسمعك الآن.»',15]],e:'الفعل أولاً (ترك الهاتف)، ثم تسمية شعورها.'}]},
+    W:{mirror:[['عندما يصمت خطيبي، أضغط عليه ليتكلم فوراً.',1],['أستطيع أن أعيد ما قاله الآخر قبل أن أرد.',5],['أنتظر منه أن يفهم حاجتي دون أن أقولها.',1]],
+      play:[{who:'زوجك',s:'«لا تتركينني أرتاح أبداً عندما أعود من العمل!»',o:[['«وماذا عن راحتي أنا؟!»',0],['«حسناً، لن أتكلم إذن.»',5],['«تحتاج إلى هدوء عندما تصل. خذ 20 دقيقة، ثم نتحدث.»',15]],e:'إعادة الكلام + تفهّم الشعور + حل عملي = نهاية الخلاف بجملة واحدة.'},
+            {who:'زوجك',s:'«أنتِ دائماً على الهاتف عندما أكلمك.»',o:[['«وأنت أيضاً!»',0],['«حسناً.»',5],['تضعين الهاتف جانباً: «تشعر أني أتجاهلك. تكلم، أنا أسمعك الآن.»',15]],e:'الفعل أولاً (ترك الهاتف)، ثم تسمية شعوره.'}],
+      mission:'اختاري تحدياً قصيراً للإصغاء (دقيقتان) لتجربيه اليوم:',
+      missionOpts:['اسألي أحداً «كيف كان يومك؟» واستمعي فقط، دون نصائح.','أعيدي عبارة واحدة قالتها صديقة قبل أن تردّي.','عندما يشتكي أحد اليوم، قولي له: «هذا مفهوم».','ضعي هاتفك مقلوباً طوال حديث كامل.']}},
+ 3:{H:{mirror:[['عائلتي تصفني تماماً كما أصف نفسي.',5],['أتظاهر بأني أكرم أو أصبر مما أنا عليه لأُعجب أهلها.',1],['أستطيع أن أذكر أسوأ ثلاث عادات لدي.',5]],
+      play:[{who:'خطيبتك',s:'«كيف تكون عندما تغضب؟»',o:[['«لا أغضب أبداً.»',0],['«حسب الموقف.»',5],['«أصمت ساعة وأحتاج إلى مساحة، ثم أكون مستعداً للحديث.»',15]],e:'الإجابة الصادقة المحددة تعطيها خريطة.'},
+            {who:'بعد يوم عمل طويل',s:'أنت متعب وجائع، وتسألك زوجتك عن خطط نهاية الأسبوع.',o:[['ترد بحدة: «ليس الآن!»',0],['تتجاهلها وتتصفح هاتفك.',3],['«أحتاج 15 دقيقة لأرتاح، ثم أنا معكِ تماماً.»',15]],e:'تسمية حالتك تحمي زوجتك من أسوأ ما فيك.'}]},
+    W:{mirror:[['عائلتي تصفني تماماً كما أصف نفسي.',5],['أخفي مزاجي أو عاداتي الحقيقية لأُعجبه وأُعجب أهله.',1],['أستطيع أن أذكر أسوأ ثلاث عادات لدي.',5]],
+      play:[{who:'خطيبك',s:'«كيف تكونين عندما تتوترين؟»',o:[['«أنا هادئة دائماً.»',0],['«حسب الموقف.»',5],['«أصبح سريعة الانفعال وأحتاج إلى قليل من الهدوء، ثم أكون بخير. الكلمة اللطيفة تساعدني.»',15]],e:'الإجابة الصادقة المحددة تعطيه خريطة.'},
+            {who:'بعد يوم طويل',s:'أنتِ متعبة وجائعة، ويسألك زوجك عن خطط نهاية الأسبوع.',o:[['تردّين بحدة: «ليس الآن!»',0],['تتجاهلينه وتتصفحين هاتفك.',3],['«أحتاج 15 دقيقة لأرتاح، ثم أنا معك تماماً.»',15]],e:'تسمية حالتك تحمي زوجك من أسوأ ما فيكِ.'}],
+      mission:'اسألي اثنين من أفراد عائلتك: «ما أسوأ عاداتي؟» وقارني إجاباتهم بنظرتك إلى نفسك.'}},
+ 4:{A:{learn:[
+     {q:'الاستشارة تعني:',o:['سؤال أهل الحكمة قبل القرار','نوعاً من الصلاة','عقد الزواج'],a:0,e:'الاستخارة طلب الهداية من الله، والاستشارة طلب الرأي من الحكماء، والأفضل الجمع بينهما.'},
+     {q:'أقوى علامة تحذير:',o:['اختلاف الهوايات','قلة الاحترام للنادل أو السائق أو للوالدين','اختلاف الذوق في الطعام'],a:1,e:'طريقة تعامل الشخص مع من هم أضعف منه تتنبأ بطريقة تعامله مع شريكه بعد الزواج.'},
+     {q:'أفضل طريقة لمعرفة أخلاق الشخص:',o:['حساباته على مواقع التواصل','رؤيته تحت الضغط، ومع المال، ومع عائلته','عشاء واحد طويل'],a:1,e:'الأخلاق تظهر في الضغط والكرم والتعامل مع الأهل، لا في لقاء مُرتَّب.'}]},
+    H:{mirror:[['أعرف شروطي التي لا أتنازل عنها في الزوجة.',5],['الجمال أو مكانة العائلة أهم عندي من أخلاقها ودينها.',1],['التقيت بعائلتها ورأيت كيف تتصرف تحت الضغط.',5]],
+      play:[{who:'زيارة عائلية',s:'هي جميلة ومهذبة معك، لكنها كلّمت العاملة المنزلية بفظاظة مرتين.',o:[['تتجاهل الأمر، فهي لطيفة معي.',0],['تخبر الجميع بما حدث.',3],['تعتبرها علامة تحذير وتلاحظ أكثر قبل القرار.',15]],e:'علامة واحدة معلومة وليست حكماً. استمر في ملاحظة تعاملها مع الآخرين.'},
+            {who:'والدتك',s:'والدتك تضغط عليك لخطبة فتاة لا تحقق شروطك الأساسية.',o:[['تقبل لإرضائها.',0],['ترفض بفظاظة.',4],['تشكرها، وتشرح شروطك الخمسة باحترام، وتطلب وقتاً.',15]],e:'وضوح القيم يساعدك على الرفض باحترام.'}],
+      mission:'اكتب صفحة واحدة: «زوجتي المثالية» في جهة، و«شروطي التي لا أتنازل عنها» في الجهة الأخرى.'},
+    W:{mirror:[['أعرف شروطي التي لا أتنازل عنها في الزوج.',5],['ماله أو مكانته أهم عندي من أخلاقه ودينه.',1],['رأيت كيف يتصرف مع الضغط والمال وعائلته.',5]],
+      play:[{who:'لقاء تعارف',s:'هو لطيف وكريم معك، لكنه أهان النادل مرتين.',o:[['تتجاهلين الأمر، فهو لطيف معي.',0],['تخبرين الجميع بما حدث.',3],['تعتبرينها علامة تحذير وتلاحظين أكثر قبل القرار.',15]],e:'علامة واحدة معلومة وليست حكماً. استمري في ملاحظة تعامله مع الآخرين.'},
+            {who:'عائلتك',s:'عائلتك تضغط عليكِ لقبول متقدّم لا يحقق شروطك الأساسية.',o:[['تقبلين لإرضائهم.',0],['ترفضين بفظاظة.',4],['تشرحين شروطك الخمسة باحترام وتطلبين وقتاً.',15]],e:'وضوح القيم يساعدكِ على الرفض باحترام.'}],
+      mission:'اكتبي صفحة واحدة: «زوجي المثالي» في جهة، و«شروطي التي لا أتنازل عنها» في الجهة الأخرى.'}},
+ 5:{A:{learn:[
+     {q:'اختبار «هل سيرتاح شريكي لو رأى هذا؟» يُطبَّق:',o:['على الرسائل العاطفية فقط','قبل إرسال أي رسالة إلى الجنس الآخر','أبداً، الخصوصية مطلقة'],a:1,e:'معظم الخيانات تبدأ بمحادثات «بريئة». هذا الاختبار يكشفها مبكراً.'},
+     {q:'أفضل منطقتين بلا هاتف:',o:['الحمام والسيارة','وقت الطعام وغرفة النوم','المكتب والنادي'],a:1,e:'الوجبات ووقت النوم هي وقت التواصل الأساسي بين الزوجين.'},
+     {q:'منشورات «الزوجين المثاليين» على الإنترنت:',o:['حياة حقيقية','لقطات مختارة بعناية','أهداف يجب تقليدها'],a:1,e:'مقارنة الحياة الحقيقية بأجمل لقطات الآخرين تصنع خيبة زائفة.'}]},
+    H:{mirror:[['لا أمانع أن تقرأ زوجتي محادثاتي.',5],['أستخدم هاتفي أثناء الوجبات.',1],['أتابع النساء أو أحادثهن على الإنترنت بطريقة تكرهها زوجتي.',1]],
+      play:[{who:'زميلة عمل، 12:12 بعد منتصف الليل',s:'«ليلة سعيدة 😊» من زميلة في العمل.',o:[['ترد بحرارة.',0],['تحذفها سراً.',4],['لا ترد، وتحصر حديث العمل في أوقات العمل، وتخبر زوجتك.',15]],e:'الشفافية تُنهي السر قبل أن يكبر.'},
+            {who:'زوجتك',s:'«هل أستطيع رؤية تلك المحادثة؟»',o:[['ترفض بغضب.',0],['تعرضها لكن تبقى عابساً طوال المساء.',7],['تعرضها بهدوء.',15]],e:'الانفتاح الهادئ يبني ثقة أكثر من أي كلمة سر.'}]},
+    W:{mirror:[['لا أمانع أن يقرأ زوجي محادثاتي.',5],['أستخدم هاتفي أثناء الوجبات.',1],['أقارن حياتي بحياة الأزواج على إنستغرام.',1]],
+      play:[{who:'زميل عمل، 12:12 بعد منتصف الليل',s:'«ليلة سعيدة 😊» من زميل في العمل.',o:[['تردّين بحرارة.',0],['تحذفينها سراً.',4],['لا تردّين، وتحصرين حديث العمل في أوقات العمل، وتخبرين زوجك.',15]],e:'الشفافية تُنهي السر قبل أن يكبر.'},
+            {who:'زوجك',s:'«هل أستطيع رؤية تلك المحادثة؟»',o:[['ترفضين بغضب.',0],['تعرضينها لكن تبقين عابسة طوال المساء.',7],['تعرضينها بهدوء.',15]],e:'الانفتاح الهادئ يبني ثقة أكثر من أي كلمة سر.'}],
+      mission:'راقبي وقت استخدامك للشاشة 3 أيام، ثم قلّليه 30 دقيقة يومياً.'}},
+ 6:{H:{mirror:[['أعرف بالضبط ما عليّ من ديون (قروض، بطاقات).',5],['قد أخفي ديناً عن زوجتي المستقبلية.',1],['لدي مدخرات للطوارئ.',5]],
+      play:[{who:'أسبوع صعب',s:'تفقد عملك.',o:[['تخفي الأمر وتتظاهر بالذهاب إلى العمل.',0],['تترك زوجتك تدفع كل شيء بلا حد زمني.',3],['تخبر زوجتك في اليوم نفسه وتتفقان على خطة بمواعيد محددة.',15]],e:'الصدق + خطة محددة بوقت يحميان كرامتك والزواج.'},
+            {who:'قبل الزفاف',s:'أهلها يريدون حفلاً كبيراً، ومدخراتك محدودة.',o:[['تأخذ قرضاً من أجل حفل كبير.',2],['تلغي أي احتفال رغم رغبة الجميع.',7],['تتفق باحترام على حفل ومهر في حدود مدخراتك.',15]],e:'البدء بالديون من أسرع الطرق إلى الخلاف المبكر.'}]},
+    W:{mirror:[['أعرف بالضبط ما عليّ من ديون (قروض، بطاقات).',5],['قد أخفي ديناً أو مصروفاً كبيراً عن زوجي المستقبلي.',1],['لدي مدخرات خاصة بي للطوارئ.',5]],
+      play:[{who:'أسبوع صعب',s:'زوجك يفقد عمله ويشعر بالحرج.',o:[['تذكّرينه بأنك تدفعين كل شيء الآن.',0],['تدفعين كل شيء بصمت، دون خطة أو حد زمني.',3],['تدعمينه بلطف، وتتفقان على خطة مكتوبة بمواعيد، وتقرران معاً إن كانت مساعدتك هدية أو قرضاً.',15]],e:'اللطف مع خطة واضحة يحفظان كرامته وحقوقك.'},
+            {who:'قبل الزفاف',s:'أهلك يريدون حفلاً كبيراً ومهراً عالياً، ومدخراته محدودة.',o:[['تصرّين، من أجل المظاهر.',2],['تلغين أي احتفال رغم رغبة الجميع.',7],['تتفقان على حفل ومهر في حدود قدرته.',15]],e:'البدء بالديون من أسرع الطرق إلى الخلاف المبكر.'}],
+      mission:'ضعي ميزانيتك الشهرية الحقيقية: الدخل، والمصاريف الثابتة، ودعم الأهل، والادخار.'}},
+ 7:{H:{mirror:[['سأنزعج لو كان دخل زوجتي أعلى بكثير من دخلي.',1],['القرارات الكبيرة تُتخذ مع زوجتي.',5],['استخدمت المال سلاحاً في خلاف.',1]],
+      play:[{who:'خبر كبير',s:'عُرضت على زوجتك ترقية في بلد آخر.',o:[['تمنعها فوراً.',0],['تتركها تقرر وحدها، لا يهمك.',2],['تجلسان معاً وتوازنان بين الأسرة والعمل والأطفال، ثم تقرران معاً.',15]],e:'القرارات المشتركة تصمد أمام النتائج السيئة، والقرارات الفردية لا تصمد.'},
+            {who:'وسط خلاف',s:'دخلها أعلى، وتشعر برغبة في قول: «لا تظني أن راتبك يجعلك صاحبة القرار!»',o:[['تقولها.',0],['تغادر الغرفة.',6],['«لنتحدث عن القرار، لا عن الرواتب.»',15]],e:'المال حين يُستعمل سلاحاً يجرح لسنوات.'}],
+      mission:'اكتب رسالة قصيرة: «ما الذي أحترمه في زوجتي المستقبلية بعيداً عن المال».'},
+    W:{mirror:[['سيقل احترامي لزوجي لو كان دخله أقل من دخلي.',1],['القرارات الكبيرة تُتخذ مع زوجي.',5],['استخدمت المال سلاحاً في خلاف.',1]],
+      play:[{who:'خبر كبير',s:'عُرضت عليكِ ترقية في بلد آخر.',o:[['تقبلين دون نقاش.',0],['ترفضين بصمت وتحملين في قلبك.',4],['تجلسان معاً وتوازنان بين الأسرة والعمل والأطفال، ثم تقرران معاً.',15]],e:'القرارات المشتركة تصمد أمام النتائج السيئة، والقرارات الفردية لا تصمد.'},
+            {who:'وسط خلاف',s:'تشعرين برغبة في قول: «هذا مالي أنا الذي يصرف على البيت!»',o:[['تقولينها.',0],['تغادرين الغرفة.',6],['«لنتحدث عن القرار، لا عن راتب من.»',15]],e:'المال حين يُستعمل سلاحاً يجرح لسنوات.'}],
+      mission:'اكتبي رسالة قصيرة: «ما الذي أحترمه في زوجي المستقبلي بعيداً عن المال».'}},
+ 8:{A:{learn:[
+     {q:'من يتولى الشكوى مع عائلة أحد الزوجين؟',o:['الزوج الآخر','صاحب العائلة نفسه','الاثنان معاً في مواجهتهم'],a:1,e:'كل زوج يتعامل مع عائلته، وهذا يحفظ كرامة الجميع.'},
+     {q:'زيارات العيد والأهل تنجح أكثر عندما:',o:['تُقرَّر في آخر لحظة','يُتفق عليها مسبقاً بتناوب عادل','تكون دائماً عند أهل الزوج'],a:1,e:'الجدول يلغي خلافاً يتكرر كل سنة.'},
+     {q:'جملة حدود جيدة:',o:['«لا تتدخلوا في شؤوننا.»','«نحبكم، وسنقرر هذا معاً كزوجين.»','الصمت'],a:1,e:'الدفء مع حدود واضحة يجمع بين المحبة والحزم.'}]},
+    H:{mirror:[['أخبر عائلتي بمشاكلي مع زوجتي.',1],['أستطيع أن أقول «لا» لوالدتي باحترام.',5],['رأي والدتي أهم من رأي زوجتي في بيتنا.',1]],
+      play:[{who:'والدتك',s:'«زوجتك لا تطبخ مثلي.»',o:[['توافقها ضاحكاً.',0],['تسكت، ثم تخبر زوجتك لاحقاً.',3],['«هي تبذل جهدها وأنا سعيد يا أمي. علّمينا وصفتك يوماً ما!»',15]],e:'دافع عن زوجتك بدفء دون أن تهاجم والدتك.'},
+            {who:'على الإنترنت',s:'أختك تنشر تفاصيل خلافك الخاص مع زوجتك.',o:[['تواجهها علناً.',2],['تتجاهل الأمر.',5],['تتحدث مع أختك على انفراد، وتتفق مع زوجتك على قاعدة للخصوصية.',15]],e:'المشاكل الخاصة تبقى خاصة، وكل زوج يتعامل مع عائلته.'}]},
+    W:{mirror:[['أخبر عائلتي بمشاكلي مع زوجي.',1],['أستطيع أن أقول «لا» لوالديّ باحترام.',5],['أتكلم بسوء عن أهله عندما أنزعج.',1]],
+      play:[{who:'حماتك',s:'«كان ابني يأكل أفضل قبل أن يتزوج.»',o:[['تردّين عليها بحدة.',0],['تبتسمين، ثم تشتكين لزوجك بغضب.',3],['تبتسمين: «علّميني طبقه المفضل يا خالتي!» وتحافظين على دفء اللحظة.',15]],e:'احترمي والدته أمام الجميع، واطرحي المشكلات الحقيقية مع زوجك بهدوء وعلى انفراد.'},
+            {who:'والدتك',s:'والدتك تسألك عن كل تفاصيل أول خلاف مع زوجك.',o:[['تخبرينها بكل شيء.',0],['تخبرينها قليلاً وتشتكين.',4],['«حللناه يا أمي، ادعي لنا.» وتبقين الأمر خاصاً.',15]],e:'المشاكل الخاصة تبقى خاصة، وكل زوج يتعامل مع عائلته.'}],
+      mission:'اكتبي 3 جمل حدود يمكنك قولها لعائلتك بلطف.'}},
+ 9:{H:{mirror:[['أستطيع طبخ 3 أطباق على الأقل.',5],['ألاحظ ما يحتاج إلى عمل في البيت دون أن يُطلب مني.',5],['أعمال البيت مسؤولية الزوجة أساساً حتى لو كانت تعمل.',1]],
+      play:[{who:'السابعة مساءً، وصلتما للتو',s:'عملتما طوال اليوم، ولم يبدأ أحد في تحضير العشاء.',o:[['تجلس وتنتظر أن تبدأ زوجتك.',0],['تطلب طعاماً كل ليلة.',6],['أحدكما يطبخ والآخر يتولى الصحون، كما خططتما معاً يوم الجمعة.',15]],e:'الخطة الأسبوعية تلغي التفاوض اليومي.'},
+            {who:'مرة أخرى',s:'زوجتك تذكّرك للمرة الثالثة بالغسيل الذي وعدت به.',o:[['«كفى إلحاحاً!»',0],['تقوم به بوجه عابس.',5],['«معكِ حق، آسف.» وتقوم به الآن وتضيفه إلى قائمتك الأسبوعية.',15]],e:'الوعد الذي يُوفى به أثمن من أي عذر.'}]},
+    W:{mirror:[['أستطيع تخطيط شؤون البيت وإدارتها أسبوعاً بأسبوع.',5],['أطلب المساعدة بوضوح بدلاً من التلميح.',5],['أقوم بكل شيء بنفسي، ثم أحمل في قلبي بصمت.',1]],
+      play:[{who:'السابعة مساءً، وصلتما للتو',s:'عملتما طوال اليوم، ولم يبدأ أحد في تحضير العشاء.',o:[['تنتظرين أن يعرض المساعدة.',0],['تقومين بكل شيء ثم تشتكين لاحقاً.',4],['تطلبين بوضوح: «سأطبخ، هل تتولى الصحون والأطفال؟» كما خططتما يوم الجمعة.',15]],e:'الطلب الواضح أفضل من التوقعات الصامتة.'},
+            {who:'مرة أخرى',s:'زوجك نسي مهامه للمرة الثالثة.',o:[['تصرخين بسبب ذلك.',0],['تقومين بها بصمت وتحملين في قلبك.',4],['تطرحين الأمر بهدوء في الاجتماع الأسبوعي وتعدّلان الخطة.',15]],e:'الضغينة الصامتة تتراكم، والاجتماع الهادئ يصلح النظام.'}],
+      mission:'تعلّمي 3 أطباق جديدة، أو خطّطي مهام البيت لأسبوع كامل وشاركيها.'}},
+ 10:{A:{learn:[
+     {q:'السنة عند الغضب:',o:['قول كل ما في النفس فوراً','الجلوس، والوضوء، وتغيير المكان','الخروج من البيت'],a:1,e:'تغيير الهيئة والوضوء يخففان الغضب جسدياً.'},
+     {q:'قول «طالق» في الغضب:',o:['لا يضر إن لم يُقصد','أمر خطير ولا يُستعمل أبداً للتهديد','أمر عادي في الخلافات'],a:1,e:'لكلمات الطلاق وزن شرعي وقانوني، فلا تُستعمل سلاحاً أبداً.'},
+     {q:'قاعدة الاستراحة:',o:['التوقف 20 دقيقة ثم العودة','التوقف عن الكلام لأيام','الفوز أولاً ثم التوقف'],a:0,e:'الاستراحة تنجح فقط إذا عاد الطرفان لإكمال الحديث.'}]},
+    H:{mirror:[['أتخذ قرارات وأنا غاضب.',1],['أعتذر لخطيبتي أو عائلتي دون أعذار.',5],['الأشياء الصغيرة تفسد يومي كله.',1]],
+      play:[{who:'العشاء',s:'احترق العشاء والجميع جائع.',o:[['تتذمر بصوت عالٍ.',0],['وجه عابس طوال المساء.',5],['«لا بأس. لنطلب طعاماً ونضحك على الموقف.»',15]],e:'قيّمه من 1 إلى 10: هل يستحق الخلاف؟ غالباً هو 2.'},
+            {who:'وسط الخلاف',s:'تشعر بالغضب يتصاعد، وكلمة «طالق» على لسانك.',o:[['تقولها.',0],['تغادر البيت لليلة.',3],['«أحتاج 20 دقيقة. سأعود ونكمل الحديث.»',15]],e:'توقّف، وعِد بالعودة. لا تجعل الطلاق كلمة غضب أبداً.'}]},
+    W:{mirror:[['أتخذ قرارات وأنا منزعجة.',1],['أعتذر دون أعذار.',5],['أعيد فتح أخطاء قديمة في كل خلاف جديد.',1]],
+      learn:[
+       {q:'السنة عند الغضب:',o:['قول كل ما في النفس فوراً','الجلوس، والوضوء، وتغيير المكان','الخروج من البيت'],a:1,e:'تغيير الهيئة والوضوء يخففان الغضب جسدياً.'},
+       {q:'قول «طلّقني» في الغضب:',o:['لا يضر، فهو يعرف أني لا أقصد','أمر خطير؛ حذّر النبي ﷺ من طلب الطلاق دون سبب حقيقي','طريقة عادية للفوز في الخلاف'],a:1,e:'ورد في سنن أبي داود والترمذي التحذير من طلب الطلاق دون سبب، فلا يُستعمل تهديداً أبداً.'},
+       {q:'قاعدة الاستراحة:',o:['التوقف 20 دقيقة ثم العودة','التوقف عن الكلام لأيام','الفوز أولاً ثم التوقف'],a:0,e:'الاستراحة تنجح فقط إذا عاد الطرفان لإكمال الحديث.'}],
+      play:[{who:'العشاء',s:'احترق العشاء والجميع جائع.',o:[['تتذمرين بصوت عالٍ.',0],['وجه عابس طوال المساء.',5],['«لا بأس. لنطلب طعاماً ونضحك على الموقف.»',15]],e:'قيّميه من 1 إلى 10: هل يستحق الخلاف؟ غالباً هو 2.'},
+            {who:'وسط الخلاف',s:'تشعرين بالغضب يتصاعد وتريدين أن تقولي: «طلّقني!»',o:[['تقولينها.',0],['تذهبين إلى بيت أهلك.',3],['«أحتاج 20 دقيقة، ثم نكمل الحديث بهدوء.»',15]],e:'توقّفي، وعِدي بالعودة. لا تستعملي الطلاق تهديداً أبداً.'}],
+      mission:'دفتر امتنان لمدة 7 أيام (3 أشياء جميلة يومياً)، وقولي «أنا آسفة» مرة واحدة دون أعذار.'}},
+ 11:{H:{mirror:[['أهتم بمظهري ولباسي في البيت، لا في الخارج فقط.',5],['أمدح نساء عائلتي بصدق.',5],['أستخدم السخرية عندما أنزعج.',1]],
+      play:[{who:'زوجتك تصل متأخرة',s:'اختر الترحيب الألطف:',o:[['«متأخرة مرة أخرى؟!»',0],['«لا يهم.»',3],['«اشتقت إليكِ. هل كل شيء بخير؟»',15]],e:'النبرة تحدد الساعة التالية من المساء.'},
+            {who:'لحظة حساسة',s:'زوجتك تسألك: «هل يعجبك فستاني الجديد؟» وهو لا يعجبك كثيراً.',o:[['«ليس حقاً، شكله سيئ.»',0],['«لا بأس به.»',4],['«تبدين جميلة في كل شيء، وأحب عليكِ الأزرق أكثر.»',15]],e:'صراحة لطيفة: ابدأ بالمحبة ثم وجّه بلطف.'}]},
+    W:{mirror:[['أهتم بمظهري في البيت، لا في الخارج فقط.',5],['أقول «شكراً» لعائلتي يومياً.',5],['أستخدم السخرية عندما أنزعج.',1]],
+      play:[{who:'زوجك يصل متأخراً',s:'اختاري الترحيب الألطف:',o:[['«متأخر مرة أخرى؟!»',0],['«لا يهم.»',3],['«اشتقت إليك. هل كل شيء بخير؟»',15]],e:'النبرة تحدد الساعة التالية من المساء.'},
+            {who:'أمر حساس',s:'رائحة فم زوجك تزعجك.',o:[['تذكرين ذلك أمام الآخرين.',0],['تتجنبين القرب بصمت.',4],['كلمة لطيفة على انفراد، مع هدية من حلوى النعناع.',15]],e:'لطيف، وعلى انفراد، وعملي. دون إحراج.'}]}},
+ 12:{W:{mission:'اختاري تحدياً منزلياً لهذا الأسبوع:'}},
+ 13:{W:{mission:'اختاري تحدي مهارة لهذا الأسبوع:'}}
+};
+
+/* ---------- First Year Simulator, per track ---------- */
+const BOSS_EN_H = [
+ ['Shared bathroom','Week one: your wife says the bathroom is always wet and the seat is up after you use it.',[['"It\'s not a big deal."',0],['"You\'re right," and change your habits from today.',2],['Promise to change, then forget.',1]]],
+ ['First fight','A small disagreement about time with your friends turns loud.',[['Call a 20-minute time-out and return to it.',2],['Raise your voice to win.',0],['Drop it and never discuss it.',1]]],
+ ['In-law visit','Your mother criticizes your wife at dinner.',[['Stay silent.',1],['Defend your wife warmly and respectfully.',2],['Join the joke.',0]]],
+ ['Money shortage','You are AED 2,000 short before payday.',[['Blame your wife\'s spending.',0],['Borrow quietly from family.',1],['Sit together, review the budget, and cut together.',2]]],
+ ['Phone jealousy','Your wife asks who you were texting late at night.',[['Show her calmly and agree a rule.',2],['Get defensive.',0],['Show it, but sulk.',1]]],
+ ['Ramadan','Both tired, iftar every night, family visits.',[['Share cooking and visits on a plan.',2],['Let your wife do everything.',0],['Order food all Ramadan.',1]]],
+ ['Job loss','You lose your job.',[['Hide it for a while.',0],['Tell her the same day and make a plan with deadlines.',2],['Let her pay without a plan.',1]]],
+ ['Pregnancy news','Your wife is expecting. Exciting and scary news.',[['Plan together: money, leave, roles, and her care.',2],['Tell your family before talking together.',0],['Wait and see.',1]]],
+ ['Exhaustion','Work and home leave no time for each other.',[['Book a weekly evening for the two of you.',2],['Accept it; it\'s normal.',1],['Complain to your friends.',0]]],
+ ['Eid','Both families expect you on the first day.',[['Follow the rotation you agreed.',2],['Insist on your family every year.',0],['Split up and go separately.',1]]],
+ ['Temptation at work','A female colleague becomes very friendly.',[['Enjoy the attention; it\'s harmless.',0],['Set a clear boundary and tell your wife.',2],['Avoid her, but keep it secret.',1]]],
+ ['Anniversary','One year together.',[['Review the year together and bring her a gift.',2],['Expensive gift, no conversation.',1],['Forget it.',0]]]
+];
+const BOSS_EN_W = [
+ ['Shared bathroom','Week one: your husband says your hair and products are all over the bathroom.',[['"So? You leave it wet!"',0],['"You\'re right," and clear up after yourself from today.',2],['Promise to change, then forget.',1]]],
+ ['First fight','A small disagreement about time with friends turns loud.',[['Call a 20-minute time-out and return to it.',2],['Raise your voice to win.',0],['Go silent for days.',1]]],
+ ['In-law visit','His mother criticizes your cooking at dinner.',[['Answer back in front of everyone.',0],['Smile, stay respectful, and talk to your husband calmly later.',2],['Stay silent and cry later.',1]]],
+ ['Money shortage','You are AED 2,000 short before payday.',[['Blame his low salary.',0],['Borrow quietly from your family.',1],['Sit together, review the budget, and cut together.',2]]],
+ ['Phone jealousy','Your husband asks who you were texting late at night.',[['Show him calmly and agree a rule.',2],['Get defensive.',0],['Show it, but sulk.',1]]],
+ ['Ramadan','Both tired, iftar every night, family visits.',[['Share cooking and visits on a plan.',2],['Do everything yourself and resent it.',0],['Order food all Ramadan.',1]]],
+ ['Job loss','Your husband loses his job.',[['Remind him that you are paying now.',0],['Support him and agree a plan with deadlines.',2],['Pay for everything without a plan.',1]]],
+ ['Pregnancy news','You are expecting. Exciting and scary news.',[['Plan together: money, leave, roles, and support.',2],['Tell your family before telling him.',0],['Wait and see.',1]]],
+ ['Exhaustion','Work and home leave no time for each other.',[['Book a weekly evening for the two of you.',2],['Accept it; it\'s normal.',1],['Complain to your friends.',0]]],
+ ['Eid','Both families expect you on the first day.',[['Follow the rotation you agreed.',2],['Insist on your family every year.',0],['Split up and go separately.',1]]],
+ ['Temptation at work','A male colleague becomes very friendly.',[['Enjoy the attention; it\'s harmless.',0],['Set a clear boundary and tell your husband.',2],['Avoid him, but keep it secret.',1]]],
+ ['Anniversary','One year together.',[['Review the year together: what worked, what to improve.',2],['Expect a big gift, no conversation.',1],['Forget it.',0]]]
+];
+const BOSS_AR_H = [
+ ['الحمام المشترك','الأسبوع الأول: زوجتك تقول إن الحمام دائماً مبلل والمقعد مرفوع بعد استخدامك.',[['«ليس أمراً كبيراً.»',0],['«معكِ حق.» وتغيّر عادتك من اليوم.',2],['تعد بالتغيير ثم تنسى.',1]]],
+ ['أول خلاف','خلاف صغير حول وقتك مع أصدقائك يعلو صوته.',[['تطلب استراحة 20 دقيقة ثم تعودان للحديث.',2],['ترفع صوتك لتفوز.',0],['تترك الأمر ولا تناقشه أبداً.',1]]],
+ ['زيارة الأهل','والدتك تنتقد زوجتك على العشاء.',[['تبقى صامتاً.',1],['تدافع عن زوجتك بدفء واحترام.',2],['تشارك في المزاح.',0]]],
+ ['نقص المال','ينقصكما 2,000 درهم قبل موعد الراتب.',[['تلوم مصاريف زوجتك.',0],['تقترض بصمت من العائلة.',1],['تجلسان وتراجعان الميزانية وتخفّضان معاً.',2]]],
+ ['غيرة الهاتف','زوجتك تسألك مع من كنت تراسل في وقت متأخر.',[['تعرض المحادثة بهدوء وتتفقان على قاعدة.',2],['تتخذ موقفاً دفاعياً.',0],['تعرضها لكنك تعبس.',1]]],
+ ['رمضان','كلاكما متعب، وإفطار كل ليلة، وزيارات عائلية.',[['تتقاسمان الطبخ والزيارات وفق خطة.',2],['تترك زوجتك تقوم بكل شيء.',0],['تطلبان الطعام طوال رمضان.',1]]],
+ ['فقدان العمل','تفقد عملك.',[['تخفي الأمر لفترة.',0],['تخبرها في اليوم نفسه وتضعان خطة بمواعيد.',2],['تتركها تدفع دون خطة.',1]]],
+ ['خبر الحمل','زوجتك حامل. خبر مفرح ومخيف في الوقت نفسه.',[['تخططان معاً: المال، والإجازة، والأدوار، ورعايتها.',2],['تخبر عائلتك قبل أن تتحدثا معاً.',0],['تنتظر لترى.',1]]],
+ ['الإرهاق','العمل والبيت لا يتركان وقتاً لكما.',[['تحجز أمسية أسبوعية لكما.',2],['تتقبل الأمر، فهذا طبيعي.',1],['تشتكي إلى أصدقائك.',0]]],
+ ['العيد','العائلتان تنتظرانكما في اليوم الأول.',[['تلتزمان بالتناوب المتفق عليه.',2],['تصرّ على عائلتك كل سنة.',0],['يذهب كل منكما وحده.',1]]],
+ ['إغراء في العمل','زميلة في العمل تصبح ودودة جداً.',[['تستمتع بالاهتمام، لا ضرر فيه.',0],['تضع حدوداً واضحة وتخبر زوجتك.',2],['تتجنبها لكن تبقي الأمر سراً.',1]]],
+ ['الذكرى السنوية','عام كامل معاً.',[['تراجعان السنة معاً وتقدّم لها هدية.',2],['هدية غالية بلا حديث.',1],['تنسى المناسبة.',0]]]
+];
+const BOSS_AR_W = [
+ ['الحمام المشترك','الأسبوع الأول: زوجك يقول إن شعرك ومستحضراتك في كل مكان في الحمام.',[['«وأنت تتركه مبللاً!»',0],['«معك حق.» وترتّبين بعد نفسك من اليوم.',2],['تعدين بالتغيير ثم تنسين.',1]]],
+ ['أول خلاف','خلاف صغير حول الوقت مع الأصدقاء يعلو صوته.',[['تطلبين استراحة 20 دقيقة ثم تعودان للحديث.',2],['ترفعين صوتك لتفوزي.',0],['تصمتين لأيام.',1]]],
+ ['زيارة الأهل','حماتك تنتقد طبخك على العشاء.',[['تردّين عليها أمام الجميع.',0],['تبتسمين وتبقين محترمة، ثم تتحدثين مع زوجك بهدوء لاحقاً.',2],['تسكتين وتبكين لاحقاً.',1]]],
+ ['نقص المال','ينقصكما 2,000 درهم قبل موعد الراتب.',[['تلومين راتبه المنخفض.',0],['تقترضين بصمت من عائلتك.',1],['تجلسان وتراجعان الميزانية وتخفّضان معاً.',2]]],
+ ['غيرة الهاتف','زوجك يسألك مع من كنتِ تراسلين في وقت متأخر.',[['تعرضين المحادثة بهدوء وتتفقان على قاعدة.',2],['تتخذين موقفاً دفاعياً.',0],['تعرضينها لكنك تعبسين.',1]]],
+ ['رمضان','كلاكما متعب، وإفطار كل ليلة، وزيارات عائلية.',[['تتقاسمان الطبخ والزيارات وفق خطة.',2],['تقومين بكل شيء وتحملين في قلبك.',0],['تطلبان الطعام طوال رمضان.',1]]],
+ ['فقدان العمل','زوجك يفقد عمله.',[['تذكّرينه بأنك تدفعين الآن.',0],['تدعمينه وتتفقان على خطة بمواعيد.',2],['تدفعين كل شيء دون خطة.',1]]],
+ ['خبر الحمل','أنتِ حامل. خبر مفرح ومخيف في الوقت نفسه.',[['تخططان معاً: المال، والإجازة، والأدوار، والدعم.',2],['تخبرين عائلتك قبل أن تخبريه.',0],['تنتظرين لتري.',1]]],
+ ['الإرهاق','العمل والبيت لا يتركان وقتاً لكما.',[['تحجزان أمسية أسبوعية لكما.',2],['تتقبلين الأمر، فهذا طبيعي.',1],['تشتكين إلى صديقاتك.',0]]],
+ ['العيد','العائلتان تنتظرانكما في اليوم الأول.',[['تلتزمان بالتناوب المتفق عليه.',2],['تصرّين على عائلتك كل سنة.',0],['يذهب كل منكما وحده.',1]]],
+ ['إغراء في العمل','زميل في العمل يصبح ودوداً جداً.',[['تستمتعين بالاهتمام، لا ضرر فيه.',0],['تضعين حدوداً واضحة وتخبرين زوجك.',2],['تتجنبينه لكن تبقين الأمر سراً.',1]]],
+ ['الذكرى السنوية','عام كامل معاً.',[['تراجعان السنة معاً: ما نجح وما يجب تحسينه.',2],['تنتظرين هدية كبيرة بلا حديث.',1],['تنسين المناسبة.',0]]]
+];
+
+const T = {
+ en:{dir:'ltr',brand:'Ready to Marry',sub:'Pre-marriage readiness game',langBtn:'العربية',langName:'English',
+  role:{husband:'Husband',wife:'Wife'},trackOf:r=>`${r} track`,
+  statWorlds:(d,n)=>`${d}/${n} modules`,statIdx:'Index',
+  chooseLang:'Language',
+  heroTitle:'Become a ready husband or a ready wife',
+  heroLead:'Fourteen modules, one for each problem that breaks marriages in our region: hygiene and order, good character, communication, money, in-laws, phones, ego, housework, patience, grooming, home atmosphere, and practical skills like cooking, sewing, and repairs. You play alone, score alone, and earn your own certificate. Every question is written for your track: husband or wife. Your answers stay on this device.',
+  nameLabel:'Your first name',namePh:'e.g. Sara',chooseTrack:'Choose your track',
+  trackH:['Husband track','Provider, protector, partner at home'],trackW:['Wife track','Partner, anchor, her rights and her role'],
+  start:'Start my journey',perWorld:'About 10 minutes per module.',
+  worldsTitle:n=>`The ${n} modules`,unlockOne:'Unlock one at a time',complete:(d,n)=>`${d} of ${n} complete`,
+  locked:'Locked',passed:'Passed',replayTag:'Replay',play:'Play',
+  ahlan:n=>`Ahlan, ${n}`,
+  howto:'Each module: <b>Mirror</b> (20) · <b>Learn</b> (30) · <b>Play</b> (30) · <b>Mission</b> (20). Pass at 70. One star at 70, two at 80, three at 90. Replay any module; your best score counts.',
+  finale:'The finale',bossName:'First Year Simulator',bossDesc:'12 real situations from year one · counts double',played:'Played',finishAll:'Finish all modules',
+  certName:'My certificate',certDesc:'Readiness Index, strengths, risks, 30-day plan',readyView:'Ready to view',afterSim:'After the simulator',
+  signOut:'Sign out',welcomeBack:'Welcome back',savedNote:'Profiles saved on this device. Tap yours to continue.',outNote:'Signed out. Your progress is saved on this device.',reset:'Reset all progress',eraseQ:'Erase all scores and start again?',keep:'Keep',erase:'Erase',
+  back:'← Modules',worldLbl:(i,p)=>`Module ${i} · ${p}`,stages:['Mirror','Learn','Play','Mission'],
+  mirrorH:'Mirror · be honest with yourself',mirrorNote:'There are no right answers here. Honest answers score full points; answers that look "too perfect" score less.',
+  scale:['Never','Rarely','Sometimes','Often','Always'],contLearn:'Continue to Learn',
+  learnH:'Learn',qOf:i=>`Question ${i} of 3`,correct:'Correct. ',notQuite:'Not quite. ',nextQ:'Next question',contPlay:'Continue to Play',
+  playH:'Play · what do you do?',roundOf:i=>`Round ${i} of 2`,skill:'The skill: ',nextRound:'Next round',contMission:'Continue to Mission',
+  missionH:'Mission · do it in real life',trackLine:r=>`${r} track:`,reflLabel:'Reflection (optional, stays on this device)',reflPh:'What did you notice about yourself?',
+  done20:"I've done it · 20 pts",commit10:'I commit to do it this week · 10 pts',
+  passedW:'Module passed',notPassed:'Not passed yet',rMirror:'Mirror · honesty',tooPerfect:'(too perfect: −8)',rLearn:'Learn · knowledge',rPlay:'Play · skill',rMission:'Mission · real life',
+  newBest:'New best score saved.',keptBest:'Your best score is kept.',notPassNote:'Read the explanations again and replay. Your best score is kept.',
+  nextWorld:'Next module',replay:'Replay',backWorlds:'Back to modules',
+  ending:'Ending',strong:'Strong Marriage',risk:'Divorce Risk',
+  strongNote:'Your choices built trust stage after stage. This score counts double in your Readiness Index.',
+  riskNote:'Several choices pushed the marriage toward crisis. Review the modules behind the hard stages and replay. Your best score counts.',
+  seeCert:'See my certificate',replayYear:'Replay the year',
+  finalBoss:'Final boss',month:(n,t)=>`Stage ${n}: ${t}`,mOf:n=>`${n} of 12`,grades:['Risky','Okay','Strong'],nextMonth:'Next stage',seeEnding:'See the ending',
+  certEyebrow:'Certificate of readiness',
+  ready:t=>t==='husband'?'Ready Husband':'Ready Wife',almost:t=>t==='husband'?'Almost Ready Husband':'Almost Ready Wife',
+  tiers:['Gold','Silver','Almost Ready'],idx:'Index',
+  completed:(n,d)=>`Completed ${n} modules and the First Year Simulator · ${d}`,
+  topS:'Top strengths',grow:'Areas to grow',plan:'Your 30-day plan',
+  planWeek:(k,n)=>`Week ${k}: replay ${n} and repeat its mission.`,planLast:t=>`Week 4: write a letter to your future ${t==='husband'?'wife':'husband'} about what you learned.`,
+  tierNote:['Gold: you are ready. Keep practising after the wedding.','Silver: ready, with a recommended review of your weakest modules.','Almost Ready: follow this plan, replay, and your index will rise.'],
+  dl:'Download certificate (PNG)',copy:'Copy my summary',preparing:'Preparing your certificate...',saved:'Certificate saved',cancelled:'Download cancelled',unavail:'Download is not available here',copied:'Copied',
+  summary:(t,n,i,tr,s,g)=>`${t} — ${n}\nReadiness Index ${i} (${tr})\nStrengths: ${s}\nTo grow: ${g}`,
+  cCert:'This certifies that',cDone:(n,t)=>`has completed ${n} modules and the First Year Simulator`,cPill:(t,i)=>`${t}  ·  Readiness Index ${i}`,
+  cTopS:'TOP STRENGTHS',cGrow:'AREAS TO GROW',cFoot:'Ready to Marry · pre-marriage readiness game',locale:'en-GB'},
+
+ ar:{dir:'rtl',brand:'جاهزون للزواج',sub:'لعبة الاستعداد قبل الزواج',langBtn:'English',langName:'العربية',
+  role:{husband:'الزوج',wife:'الزوجة'},trackOf:r=>`مسار ${r}`,
+  statWorlds:(d,n)=>`${d}/${n} وحدات`,statIdx:'المؤشر',
+  chooseLang:'اللغة',
+  heroTitle:'كن زوجاً مستعداً، أو كوني زوجة مستعدة',
+  heroLead:'أربع عشرة وحدة، وحدة لكل مشكلة تهدم الزواج في منطقتنا: النظافة والترتيب، وحسن الخلق، والتواصل، والمال، والأهل، والهاتف، والكبرياء، وأعمال البيت، والصبر، والعناية بالنفس، وأجواء البيت، ومهارات عملية كالطبخ والخياطة والإصلاح. تلعب وحدك، وتحصل على نتيجتك وحدك، وتنال شهادتك الخاصة. كل سؤال مكتوب لمسارك: زوجاً أو زوجة. إجاباتك تبقى على هذا الجهاز.',
+  nameLabel:'اسمك الأول',namePh:'مثال: سارة',chooseTrack:'اختر مسارك',
+  trackH:['مسار الزوج','القوامة، والحماية، والشراكة في البيت'],trackW:['مسار الزوجة','الشراكة، والسكن، وحقوقها ودورها'],
+  start:'ابدأ رحلتي',perWorld:'نحو 10 دقائق لكل وحدة.',
+  worldsTitle:n=>`الوحدات الـ${n}`,unlockOne:'تُفتح واحدة تلو الأخرى',complete:(d,n)=>`${d} من ${n} مكتملة`,
+  locked:'مغلق',passed:'ناجح',replayTag:'أعد اللعب',play:'العب',
+  ahlan:n=>`أهلاً، ${n}`,
+  howto:'كل وحدة: <b>المرآة</b> (20) · <b>تعلّم</b> (30) · <b>العب</b> (30) · <b>المهمة</b> (20). النجاح من 70. نجمة عند 70، ونجمتان عند 80، وثلاث عند 90. يمكنك إعادة أي وحدة، وتُحتسب أفضل نتيجة.',
+  finale:'الختام',bossName:'محاكي السنة الأولى',bossDesc:'12 موقفاً حقيقياً من السنة الأولى · تُحتسب مضاعفة',played:'تم اللعب',finishAll:'أكمل كل الوحدات',
+  certName:'شهادتي',certDesc:'مؤشر الاستعداد، ونقاط القوة، والمخاطر، وخطة 30 يوماً',readyView:'جاهزة للعرض',afterSim:'بعد المحاكي',
+  signOut:'تسجيل الخروج',welcomeBack:'مرحباً بعودتك',savedNote:'ملفات محفوظة على هذا الجهاز. اختر ملفك للمتابعة.',outNote:'تم تسجيل الخروج. تقدّمك محفوظ على هذا الجهاز.',reset:'مسح كل التقدم',eraseQ:'مسح كل النتائج والبدء من جديد؟',keep:'إبقاء',erase:'مسح',
+  back:'→ الوحدات',worldLbl:(i,p)=>`الوحدة ${i} · ${p}`,stages:['المرآة','تعلّم','العب','المهمة'],
+  mirrorH:'المرآة · كن صادقاً مع نفسك',mirrorNote:'لا توجد إجابات صحيحة هنا. الإجابات الصادقة تنال الدرجة كاملة، والإجابات «المثالية أكثر من اللازم» تنال أقل.',
+  scale:['أبداً','نادراً','أحياناً','غالباً','دائماً'],contLearn:'تابع إلى «تعلّم»',
+  learnH:'تعلّم',qOf:i=>`السؤال ${i} من 3`,correct:'صحيح. ',notQuite:'ليس تماماً. ',nextQ:'السؤال التالي',contPlay:'تابع إلى «العب»',
+  playH:'العب · ماذا تفعل؟',roundOf:i=>`الجولة ${i} من 2`,skill:'المهارة: ',nextRound:'الجولة التالية',contMission:'تابع إلى «المهمة»',
+  missionH:'المهمة · طبّقها في الحياة',trackLine:r=>`مسار ${r}:`,reflLabel:'تأمّل (اختياري، يبقى على هذا الجهاز)',reflPh:'ماذا لاحظت عن نفسك؟',
+  done20:'أنجزتها · 20 نقطة',commit10:'ألتزم بإنجازها هذا الأسبوع · 10 نقاط',
+  passedW:'نجحت في هذه الوحدة',notPassed:'لم تنجح بعد',rMirror:'المرآة · الصدق',tooPerfect:'(مثالية زائدة: −8)',rLearn:'تعلّم · المعرفة',rPlay:'العب · المهارة',rMission:'المهمة · التطبيق',
+  newBest:'حُفظت أفضل نتيجة جديدة.',keptBest:'أفضل نتيجة لك محفوظة.',notPassNote:'اقرأ الشروح مرة أخرى وأعد اللعب. أفضل نتيجة لك محفوظة.',
+  nextWorld:'الوحدة التالية',replay:'أعد اللعب',backWorlds:'العودة إلى الوحدات',
+  ending:'النهاية',strong:'زواج قوي',risk:'خطر الطلاق',
+  strongNote:'اختياراتك بنت الثقة مرحلة بعد مرحلة. هذه النتيجة تُحتسب مضاعفة في مؤشر استعدادك.',
+  riskNote:'بعض الاختيارات دفعت الزواج نحو الأزمة. راجع الوحدات المرتبطة بالمراحل الصعبة وأعد اللعب. تُحتسب أفضل نتيجة.',
+  seeCert:'اعرض شهادتي',replayYear:'أعد السنة',
+  finalBoss:'التحدي الأخير',month:(n,t)=>`المرحلة ${n}: ${t}`,mOf:n=>`${n} من 12`,grades:['محفوف بالخطر','مقبول','قوي'],nextMonth:'المرحلة التالية',seeEnding:'اعرض النهاية',
+  certEyebrow:'شهادة الاستعداد',
+  ready:t=>t==='husband'?'زوج مستعد':'زوجة مستعدة',almost:t=>t==='husband'?'زوج على وشك الاستعداد':'زوجة على وشك الاستعداد',
+  tiers:['ذهبي','فضي','على وشك الاستعداد'],idx:'المؤشر',
+  completed:(n,d,t)=>`${t==='wife'?'أكملت':'أكمل'} ${n} وحدة ومحاكي السنة الأولى · ${d}`,
+  topS:'أبرز نقاط القوة',grow:'مجالات للتحسين',plan:'خطتك لمدة 30 يوماً',
+  planWeek:(k,n)=>`الأسبوع ${k}: أعد وحدة «${n}» وكرّر مهمتها.`,planLast:t=>`الأسبوع 4: اكتب رسالة إلى ${t==='husband'?'زوجتك المستقبلية':'زوجك المستقبلي'} عمّا تعلمته.`,
+  tierNote:['ذهبي: أنت مستعد. واصل التدرّب بعد الزواج.','فضي: مستعد، مع مراجعة مقترحة لأضعف وحداتك.','على وشك الاستعداد: اتبع هذه الخطة وأعد اللعب، وسيرتفع مؤشرك.'],
+  dl:'تحميل الشهادة (PNG)',copy:'نسخ ملخصي',preparing:'جارٍ تجهيز شهادتك...',saved:'حُفظت الشهادة',cancelled:'أُلغي التحميل',unavail:'التحميل غير متاح هنا',copied:'تم النسخ',
+  summary:(t,n,i,tr,s,g)=>`${t} — ${n}\nمؤشر الاستعداد ${i} (${tr})\nنقاط القوة: ${s}\nللتحسين: ${g}`,
+  cCert:'نشهد بأن',cDone:(n,t)=>`${t==='wife'?'أكملت':'أكمل'} ${n} وحدة ومحاكي السنة الأولى`,cPill:(t,i)=>`${t}  ·  مؤشر الاستعداد ${i}`,
+  cTopS:'أبرز نقاط القوة',cGrow:'مجالات للتحسين',cFoot:'جاهزون للزواج · لعبة الاستعداد قبل الزواج',locale:'ar-AE'}
+};
+
+T.arW = {
+  mirrorH:'المرآة · كوني صادقة مع نفسك', stages:['المرآة','تعلّمي','العبي','المهمة'], learnH:'تعلّمي', playH:'العبي · ماذا تفعلين؟',
+  contLearn:'تابعي إلى «تعلّمي»', contPlay:'تابعي إلى «العبي»', contMission:'تابعي إلى «المهمة»',
+  howto:'كل وحدة: <b>المرآة</b> (20) · <b>تعلّمي</b> (30) · <b>العبي</b> (30) · <b>المهمة</b> (20). النجاح من 70. نجمة عند 70، ونجمتان عند 80، وثلاث عند 90. يمكنك إعادة أي وحدة، وتُحتسب أفضل نتيجة.',
+  missionH:'المهمة · طبّقيها في الحياة', reflPh:'ماذا لاحظتِ عن نفسك؟',
+  passedW:'نجحتِ في هذه الوحدة', notPassed:'لم تنجحي بعد', notPassNote:'اقرئي الشروح مرة أخرى وأعيدي اللعب. أفضل نتيجة لك محفوظة.',
+  replay:'أعيدي اللعب', replayTag:'أعيدي اللعب', play:'العبي', finishAll:'أكملي كل الوحدات',
+  strongNote:'اختياراتكِ بنت الثقة مرحلة بعد مرحلة. هذه النتيجة تُحتسب مضاعفة في مؤشر استعدادك.',
+  riskNote:'بعض الاختيارات دفعت الزواج نحو الأزمة. راجعي الوحدات المرتبطة بالمراحل الصعبة وأعيدي اللعب. تُحتسب أفضل نتيجة.',
+  seeCert:'اعرضي شهادتي', replayYear:'أعيدي السنة', seeEnding:'اعرضي النهاية',
+  planWeek:(k,n)=>`الأسبوع ${k}: أعيدي وحدة «${n}» وكرّري مهمتها.`, planLast:t=>'الأسبوع 4: اكتبي رسالة إلى زوجك المستقبلي عمّا تعلمتِه.',
+  tierNote:['ذهبي: أنتِ مستعدة. واصلي التدرّب بعد الزواج.','فضي: مستعدة، مع مراجعة مقترحة لأضعف وحداتك.','على وشك الاستعداد: اتبعي هذه الخطة وأعيدي اللعب، وسيرتفع مؤشرك.']
+};
+
+/* ---------- state ---------- */
+const KEY='ready-to-marry-v1';
+let S = load() || {name:'',track:'',worlds:{},boss:null,unlocked:0,v:3};
+if(S.v===undefined){ if(S.track){const w={};for(const k in S.worlds)w[+k+1]=S.worlds[k];S.worlds=w;S.unlocked=(S.unlocked||0)+1;} S.v=2; }
+if(S.v===2){ if(S.track){const w={};for(const k in S.worlds){const n=+k;w[n>=1?n+1:n]=S.worlds[k];}S.worlds=w;if((S.unlocked||0)>=1)S.unlocked=S.unlocked+1;} S.v=3; try{localStorage.setItem('ready-to-marry-v1',JSON.stringify(S))}catch(e){} }
+if(!S.lang){ let nav=''; try{nav=(navigator.language||'').toLowerCase()}catch(e){} S.lang=nav.startsWith('ar')?'ar':'en'; }
+let cur = null; // active run
+function load(){try{const v=localStorage.getItem(KEY);return v?JSON.parse(v):null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const PKEY='ready-to-marry-profiles';
+let outMsg=false;
+function loadProfiles(){try{const v=JSON.parse(localStorage.getItem(PKEY));return Array.isArray(v)?v:[]}catch(e){return []}}
+function saveProfiles(p){try{localStorage.setItem(PKEY,JSON.stringify(p.slice(0,10)))}catch(e){}}
+function signOut(){
+  const p=loadProfiles().filter(x=>!(x.name===S.name&&x.track===S.track));
+  if(S.track) p.unshift({...S});
+  saveProfiles(p);
+  S={name:'',track:'',worlds:{},boss:null,unlocked:0,v:3,lang:S.lang};
+  obDraft={track:'',name:''}; cur=null; outMsg=true; save(); render(); scrollTo(0,0);
+}
+function signIn(k){
+  const p=loadProfiles(); const pr=p[k]; if(!pr) return;
+  S={...pr,lang:S.lang}; saveProfiles(p.filter((_,j)=>j!==k)); cur=null; outMsg=false; save(); render(); scrollTo(0,0);
+}
+const L=()=>{const b=T[S.lang]||T.en; return (S.lang==='ar'&&S.track==='wife')?{...b,...T.arW}:b;};
+const WL=()=>S.lang==='ar'?WORLDS_AR:WORLDS_EN;
+const BL=()=>S.lang==='ar'?(S.track==='wife'?BOSS_AR_W:BOSS_AR_H):(S.track==='wife'?BOSS_EN_W:BOSS_EN_H);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const starsOf=sc=>sc>=90?3:sc>=80?2:sc>=70?1:0;
+const starHTML=(n,cls='stars')=>`<span class="${cls}" aria-label="${n}/3">${[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('')}</span>`;
+function totalStars(){return Object.values(S.worlds).reduce((a,w)=>a+starsOf(w.best),0)}
+function doneCount(){return Object.keys(S.worlds).length}
+function readiness(){
+  if(doneCount()<N||!S.boss) return null;
+  const sum=Object.values(S.worlds).reduce((a,w)=>a+w.best,0);
+  return Math.round((sum+2*S.boss.best)/(N+2));
+}
+function setLang(l){S.lang=l;save();applyDir();render();}
+function applyDir(){
+  const t=L(); document.documentElement.lang=S.lang; document.documentElement.dir=t.dir;
+  document.title=t.brand;
+}
+
+function header(){
+  const t=L();
+  $('#brandName').textContent=t.brand;
+  $('#who').textContent = S.name ? `${S.name} · ${t.trackOf(t.role[S.track])}` : t.sub;
+  const idx=readiness();
+  $('#stats').innerHTML = (S.track ? `
+    <span class="chip brass">★ ${totalStars()}/${N*3}</span>
+    <span class="chip">${t.statWorlds(doneCount(),N)}</span>
+    <span class="chip lapis">${t.statIdx} ${idx??'–'}</span>` : '') +
+    `<button class="langbtn" id="langBtn" lang="${S.lang==='ar'?'en':'ar'}">${t.langBtn}</button>` +
+    (S.track ? `<button class="langbtn out" id="outBtn">${t.signOut}</button>` : '');
+  $('#langBtn').onclick=()=>setLang(S.lang==='ar'?'en':'ar');
+  if($('#outBtn')) $('#outBtn').onclick=signOut;
+}
+
+/* ---------- screens ---------- */
+function render(){
+  applyDir();
+  header();
+  if(!S.track) return onboarding();
+  if(!cur) return mapView();
+  if(cur.type==='world') return worldView();
+  if(cur.type==='boss') return bossView();
+  if(cur.type==='cert') return certView();
+}
+
+let obDraft={track:'',name:''};
+function onboarding(){
+  const t=L(), profs=loadProfiles();
+  const profHTML = profs.length ? `<section class="panel stack" style="gap:12px">
+     <div class="sectionhead"><h2>${t.welcomeBack}</h2></div>
+     ${outMsg?`<p class="note" style="margin:0" role="status">${t.outNote}</p>`:''}
+     <p class="note" style="margin:0">${t.savedNote}</p>
+     <div class="tracks">${profs.map((pr,k)=>`<button class="track" data-p="${k}"><b>${esc(pr.name)}</b><span>${t.trackOf(t.role[pr.track])} · ${t.statWorlds(Object.keys(pr.worlds||{}).length,N)}</span></button>`).join('')}</div>
+   </section>` : '';
+  $('#app').innerHTML=`<div class="stack">
+   ${profHTML}
+   <section class="panel hero">
+     <div class="field"><label>${t.chooseLang}</label>
+       <div class="langpick">
+         <button class="track" id="l-en" aria-pressed="${S.lang==='en'}" lang="en"><b>English</b></button>
+         <button class="track" id="l-ar" aria-pressed="${S.lang==='ar'}" lang="ar"><b>العربية</b></button>
+       </div></div>
+     <div class="ar">وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً</div>
+     <h1>${t.heroTitle}</h1>
+     <p class="lead">${t.heroLead}</p>
+     <div class="field"><label for="nm">${t.nameLabel}</label><input type="text" id="nm" maxlength="30" placeholder="${t.namePh}" autocomplete="given-name" value="${esc(obDraft.name)}"></div>
+     <div class="field"><label>${t.chooseTrack}</label>
+       <div class="tracks">
+         <button class="track" id="t-h" aria-pressed="${obDraft.track==='husband'}"><b>${t.trackH[0]}</b><span>${t.trackH[1]}</span></button>
+         <button class="track" id="t-w" aria-pressed="${obDraft.track==='wife'}"><b>${t.trackW[0]}</b><span>${t.trackW[1]}</span></button>
+       </div></div>
+     <div class="row"><button class="btn" id="go" disabled>${t.start}</button><span class="note">${t.perWorld}</span></div>
+   </section>
+   ${mapGrid(true)}
+  </div>`;
+  const upd=()=>{obDraft.name=$('#nm').value;$('#go').disabled=!(obDraft.track&&obDraft.name.trim())};
+  upd();
+  $('#l-en').onclick=()=>setLang('en');$('#l-ar').onclick=()=>setLang('ar');
+  $('#t-h').onclick=()=>{obDraft.track='husband';$('#t-h').setAttribute('aria-pressed','true');$('#t-w').setAttribute('aria-pressed','false');upd()};
+  $('#t-w').onclick=()=>{obDraft.track='wife';$('#t-w').setAttribute('aria-pressed','true');$('#t-h').setAttribute('aria-pressed','false');upd()};
+  $('#nm').oninput=upd;
+  document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>signIn(+b.dataset.p));
+  $('#go').onclick=()=>{const nm=obDraft.name.trim(); const k=profs.findIndex(x=>x.name.toLowerCase()===nm.toLowerCase()&&x.track===obDraft.track); if(k>=0) return signIn(k); S.name=nm;S.track=obDraft.track;outMsg=false;save();render()};
+}
+
+function mapGrid(preview){
+  const t=L();
+  return `<section class="stack">
+    <div class="sectionhead"><h2>${t.worldsTitle(N)}</h2>${preview?`<span class="note">${t.unlockOne}</span>`:`<span class="note">${t.complete(doneCount(),N)}</span>`}</div>
+    ${preview?'':`<div class="progress" aria-hidden="true"><i style="width:${doneCount()/N*100}%"></i></div>`}
+    <div class="map">${WL().map((w,i)=>{
+      const rec=S.worlds[i]; const locked=preview||i>S.unlocked;
+      const tag=preview||locked?`<span class="tag lock">${t.locked}</span>`:rec?(rec.best>=70?`<span class="tag pass">${t.passed}</span>`:`<span class="tag retry">${t.replayTag}</span>`):`<span class="tag next">${t.play}</span>`;
+      return `<button class="world" data-w="${i}" ${locked?'disabled':''}>
+        <span class="num">${AR[i]}</span><h3>${w.name}</h3><span class="prob">${w.prob}</span>
+        <span class="meta">${tag}<span>${rec?starHTML(starsOf(rec.best))+' '+rec.best:''}</span></span></button>`}).join('')}</div>
+  </section>`;
+}
+
+function mapView(){
+  const t=L(), allDone=doneCount()===N, idx=readiness();
+  $('#app').innerHTML=`<div class="stack">
+    <div class="stack" style="gap:6px"><span class="eyebrow">${esc(t.ahlan(S.name))}</span>
+    <p class="lead">${t.howto}</p></div>
+    ${mapGrid(false)}
+    <section class="stack"><div class="sectionhead"><h2>${t.finale}</h2></div>
+     <div class="finale">
+      <button class="world" id="bossBtn" ${allDone?'':'disabled'}><span class="num">Y1</span><h3>${t.bossName}</h3><span class="prob">${t.bossDesc}</span><span class="meta">${S.boss?`<span class="tag pass">${t.played}</span>`:allDone?`<span class="tag next">${t.play}</span>`:`<span class="tag lock">${t.finishAll}</span>`}<span>${S.boss?S.boss.best+'/100':''}</span></span></button>
+      <button class="world" id="certBtn" ${idx!==null?'':'disabled'}><span class="num">★</span><h3>${t.certName}</h3><span class="prob">${t.certDesc}</span><span class="meta">${idx!==null?`<span class="tag pass">${t.readyView}</span>`:`<span class="tag lock">${t.afterSim}</span>`}<span>${idx??''}</span></span></button>
+     </div></section>
+    <div class="confirm" id="resetBox"><button class="btn quiet" id="reset">${t.reset}</button></div>
+  </div>`;
+  document.querySelectorAll('.world[data-w]').forEach(b=>b.onclick=()=>startWorld(+b.dataset.w));
+  $('#bossBtn').onclick=()=>{cur={type:'boss',m:0,pts:0,picks:[]};render();scrollTo(0,0)};
+  $('#certBtn').onclick=()=>{cur={type:'cert'};render();scrollTo(0,0)};
+  $('#reset').onclick=()=>{$('#resetBox').innerHTML=`<span>${t.eraseQ}</span><button class="btn quiet" id="no">${t.keep}</button><button class="btn" id="yes" style="background:var(--bad)">${t.erase}</button>`;
+    $('#no').onclick=render;$('#yes').onclick=()=>{S={name:'',track:'',worlds:{},boss:null,unlocked:0,v:3,lang:S.lang};obDraft={track:'',name:''};save();cur=null;render()}};
+}
+
+function startWorld(i){cur={type:'world',w:i,stage:0,mirror:[null,null,null],li:0,lpick:null,lscore:0,pi:0,ppick:null,pscore:0,mscore:null};render();scrollTo(0,0)}
+
+function stageHead(w,i){
+  const t=L();
+  return `<div class="stagehead"><div class="row" style="justify-content:space-between"><button class="btn quiet" id="back">${t.back}</button><span class="eyebrow">${t.worldLbl(AR[i],w.prob)}</span></div>
+   <h2 style="font-size:1.7rem">${w.name}</h2>
+   <div class="steps">${t.stages.map((s,k)=>`<div class="${k<cur.stage?'done':k===cur.stage?'now':''}">${s}</div>`).join('')}</div></div>`;
+}
+
+function worldView(){
+  const t=L(), i=cur.w, w=tv(WL()[i],i);
+  let body='';
+  if(cur.stage===0){
+    body=`<div class="card"><h3>${t.mirrorH}</h3><p class="note" style="margin:0">${t.mirrorNote}</p>
+     ${w.mirror.map((m,k)=>`<div class="mirror-item"><div class="q">${esc(m[0])}</div><div class="scale">${t.scale.map((l,v)=>`<button data-k="${k}" data-v="${v+1}" aria-pressed="${cur.mirror[k]===v+1}">${l}</button>`).join('')}</div></div>`).join('')}
+     <div class="row"><button class="btn" id="next" ${cur.mirror.includes(null)?'disabled':''}>${t.contLearn}</button></div></div>`;
+  } else if(cur.stage===1){
+    const Lq=w.learn[cur.li], p=cur.lpick;
+    body=`<div class="card"><div class="row" style="justify-content:space-between"><h3>${t.learnH}</h3><span class="counter">${t.qOf(cur.li+1)}</span></div>
+      <div class="q">${esc(Lq.q)}</div>
+      <div class="opts">${Lq.o.map((o,k)=>`<button class="opt ${p===null?'':k===Lq.a?'right':k===p?'wrong':''}" data-k="${k}" ${p!==null?'disabled':''}><span>${esc(o)}</span></button>`).join('')}</div>
+      ${p!==null?`<div class="explain"><b>${p===Lq.a?t.correct:t.notQuite}</b>${esc(Lq.e)}</div><div class="row"><button class="btn" id="next">${cur.li<2?t.nextQ:t.contPlay}</button></div>`:''}</div>`;
+  } else if(cur.stage===2){
+    const P=w.play[cur.pi], p=cur.ppick;
+    const order=cur.order||(cur.order=shuffle([0,1,2]));
+    body=`<div class="card"><div class="row" style="justify-content:space-between"><h3>${t.playH}</h3><span class="counter">${t.roundOf(cur.pi+1)}</span></div>
+      <div><div class="speaker">${esc(P.who)}</div><div class="scenario">${esc(P.s)}</div></div>
+      <div class="opts">${order.map(k=>{const o=P.o[k];const cls=p===null?'':o[1]===15?'right':k===p?(o[1]===0?'wrong':'mid'):'';
+        return `<button class="opt ${cls}" data-k="${k}" ${p!==null?'disabled':''}><span>${esc(o[0])}</span>${p!==null?`<span class="pts">+${o[1]}</span>`:''}</button>`}).join('')}</div>
+      ${p!==null?`<div class="explain"><b>${t.skill}</b>${esc(P.e)}</div><div class="row"><button class="btn" id="next">${cur.pi<1?t.nextRound:t.contMission}</button></div>`:''}</div>`;
+  } else if(cur.stage===3){
+    body=`<div class="card mission"><h3>${t.missionH}</h3>
+      <div class="q">${esc(w.mission)}</div>
+      ${w.missionOpts?`<div class="opts">${w.missionOpts.map((o,k)=>`<button class="opt ${cur.mpick===k?'right':''}" data-mk="${k}" aria-pressed="${cur.mpick===k}"><span>${esc(o)}</span></button>`).join('')}</div>`:''}
+      <div class="trackline"><b>${t.trackLine(t.role[S.track])}</b> ${esc(S.track==='husband'?w.hus:w.wif)}</div>
+      <div class="field"><label for="refl">${t.reflLabel}</label><textarea id="refl" rows="3" placeholder="${t.reflPh}">${esc(cur.refl||'')}</textarea></div>
+      <div class="row"><button class="btn" id="done" ${w.missionOpts&&cur.mpick==null?'disabled':''}>${t.done20}</button><button class="btn ghost" id="commit" ${w.missionOpts&&cur.mpick==null?'disabled':''}>${t.commit10}</button></div></div>`;
+  } else body=resultCard();
+
+  $('#app').innerHTML=`<div class="stack">${stageHead(w,i)}${body}</div>`;
+  $('#back').onclick=()=>{cur=null;render()};
+  if(cur.stage===0){
+    document.querySelectorAll('.scale button').forEach(b=>b.onclick=()=>{cur.mirror[+b.dataset.k]=+b.dataset.v;render()});
+    $('#next').onclick=()=>{cur.stage=1;render()};
+  } else if(cur.stage===1){
+    document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{cur.lpick=+b.dataset.k;if(cur.lpick===w.learn[cur.li].a)cur.lscore+=10;render()});
+    if($('#next'))$('#next').onclick=()=>{if(cur.li<2){cur.li++;cur.lpick=null}else cur.stage=2;render()};
+  } else if(cur.stage===2){
+    document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{cur.ppick=+b.dataset.k;cur.pscore+=w.play[cur.pi].o[cur.ppick][1];render()});
+    if($('#next'))$('#next').onclick=()=>{if(cur.pi<1){cur.pi++;cur.ppick=null;cur.order=null}else cur.stage=3;render()};
+  } else if(cur.stage===3){
+    document.querySelectorAll('[data-mk]').forEach(b=>b.onclick=()=>{cur.mpick=+b.dataset.mk;render()});
+    $('#refl').oninput=e=>{cur.refl=e.target.value};
+    const fin=pts=>{cur.mscore=pts;cur.refl=$('#refl').value;finishWorld();};
+    $('#done').onclick=()=>fin(20);$('#commit').onclick=()=>fin(10);
+  } else {
+    $('#map').onclick=()=>{cur=null;render();scrollTo(0,0)};
+    $('#again').onclick=()=>startWorld(i);
+    if($('#nextw'))$('#nextw').onclick=()=>startWorld(i+1);
+  }
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function mirrorScore(){
+  const w=tv(WL()[cur.w],cur.w);
+  const perfect=w.mirror.every((m,k)=>cur.mirror[k]===m[1]);
+  return {pts:perfect?12:20,perfect};
+}
+function finishWorld(){
+  const m=mirrorScore();
+  cur.total=m.pts+cur.lscore+cur.pscore+cur.mscore; cur.perfect=m.perfect;
+  const prev=S.worlds[cur.w];
+  cur.isBest=!prev||cur.total>prev.best;
+  S.worlds[cur.w]={best:Math.max(prev?prev.best:0,cur.total),last:cur.total,refl:cur.refl||(prev&&prev.refl)||''};
+  if(cur.w>=S.unlocked&&cur.w<N-1)S.unlocked=cur.w+1;
+  save(); cur.stage=4; render(); scrollTo(0,0);
+}
+function resultCard(){
+  const t=L(), n=starsOf(cur.total), m=mirrorScore(), pass=cur.total>=70;
+  return `<div class="card result">
+    <span class="eyebrow">${pass?t.passedW:t.notPassed}</span>
+    <div class="bigscore" dir="ltr">${cur.total}<span style="font-size:1.4rem;color:var(--muted)">/100</span></div>
+    ${starHTML(n,'bigstars')}
+    <table class="break"><tbody>
+      <tr><td>${t.rMirror}${m.perfect?` <span class="note">${t.tooPerfect}</span>`:''}</td><td dir="ltr">${m.pts}/20</td></tr>
+      <tr><td>${t.rLearn}</td><td dir="ltr">${cur.lscore}/30</td></tr>
+      <tr><td>${t.rPlay}</td><td dir="ltr">${cur.pscore}/30</td></tr>
+      <tr><td>${t.rMission}</td><td dir="ltr">${cur.mscore}/20</td></tr>
+    </tbody></table>
+    <p class="note" style="margin:0">${pass?(cur.isBest?t.newBest:t.keptBest):t.notPassNote}</p>
+    <div class="row" style="justify-content:center">
+      ${cur.w<N-1?`<button class="btn" id="nextw">${t.nextWorld}</button>`:''}
+      <button class="btn ghost" id="again">${t.replay}</button><button class="btn quiet" id="map">${t.backWorlds}</button></div></div>`;
+}
+
+function bossView(){
+  const t=L(), BB=BL();
+  if(cur.m>=12){
+    const sc=Math.round(cur.pts/24*100);
+    if(!cur.saved){const prev=S.boss; S.boss={best:Math.max(prev?prev.best:0,sc),last:sc}; save(); cur.saved=true;}
+    const strong=sc>=70;
+    $('#app').innerHTML=`<div class="stack"><button class="btn quiet" id="back" style="align-self:flex-start">${t.back}</button>
+     <div class="card result"><span class="eyebrow">${t.ending}</span><h2 style="font-size:2rem">${strong?t.strong:t.risk}</h2>
+     <div class="bigscore" dir="ltr">${sc}<span style="font-size:1.4rem;color:var(--muted)">/100</span></div>
+     <p class="lead" style="margin:0 auto">${strong?t.strongNote:t.riskNote}</p>
+     <div class="row" style="justify-content:center"><button class="btn brass" id="cert">${t.seeCert}</button><button class="btn ghost" id="again">${t.replayYear}</button></div></div></div>`;
+    $('#back').onclick=()=>{cur=null;render()};
+    $('#cert').onclick=()=>{cur={type:'cert'};render();scrollTo(0,0)};
+    $('#again').onclick=()=>{cur={type:'boss',m:0,pts:0,picks:[]};render()};
+    return;
+  }
+  const B=BB[cur.m], p=cur.pick;
+  $('#app').innerHTML=`<div class="stack"><div class="stagehead"><div class="row" style="justify-content:space-between"><button class="btn quiet" id="back">${t.back}</button><span class="eyebrow">${t.finalBoss}</span></div>
+    <h2 style="font-size:1.7rem">${t.bossName}</h2>
+    <div class="progress"><i style="width:${cur.m/12*100}%"></i></div></div>
+    <div class="card"><div class="row" style="justify-content:space-between"><h3>${t.month(cur.m+1,B[0])}</h3><span class="counter">${t.mOf(cur.m+1)}</span></div>
+     <div class="scenario">${esc(B[1])}</div>
+     <div class="opts">${B[2].map((o,k)=>`<button class="opt ${p==null?'':o[1]===2?'right':k===p?(o[1]===0?'wrong':'mid'):''}" data-k="${k}" ${p!=null?'disabled':''}><span>${esc(o[0])}</span>${p!=null?`<span class="pts">${t.grades[o[1]]}</span>`:''}</button>`).join('')}</div>
+     ${p!=null?`<div class="row"><button class="btn" id="next">${cur.m<11?t.nextMonth:t.seeEnding}</button></div>`:''}</div></div>`;
+  $('#back').onclick=()=>{cur=null;render()};
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{cur.pick=+b.dataset.k;cur.pts+=B[2][cur.pick][1];render()});
+  if($('#next'))$('#next').onclick=()=>{cur.m++;cur.pick=null;render()};
+}
+
+function certView(){
+  const t=L(), idx=readiness();
+  const ranked=WL().map((w,i)=>({i,name:w.name,prob:w.prob,s:S.worlds[i].best})).sort((a,b)=>b.s-a.s);
+  const top=ranked.slice(0,3), low=ranked.slice(-3).reverse();
+  const ti=idx>=85?0:idx>=70?1:2, tier=[['gold','silver','almost'][ti],t.tiers[ti]];
+  const title=idx>=70?t.ready(S.track):t.almost(S.track);
+  const date=new Date().toLocaleDateString(t.locale,{day:'numeric',month:'long',year:'numeric'});
+  const plan=low.map((w,k)=>t.planWeek(k+1,w.name)).concat([t.planLast(S.track)]);
+  $('#app').innerHTML=`<div class="stack"><button class="btn quiet" id="back" style="align-self:flex-start">${t.back}</button>
+   <section class="cert">
+     <div class="ar">شهادة الاستعداد للزواج</div>
+     <span class="eyebrow">${t.certEyebrow}</span>
+     <h2>${title}</h2>
+     <div class="name">${esc(S.name)}</div>
+     <span class="tier ${tier[0]}">${tier[1]} · ${t.idx} ${idx}</span>
+     <p class="note" style="margin:0">${t.completed(N,date,S.track)}</p>
+   </section>
+   <div class="cols">
+     <div class="card"><h3>${t.topS}</h3><ul>${top.map(w=>`<li>${w.name} <span class="note">· ${w.s}</span></li>`).join('')}</ul></div>
+     <div class="card"><h3>${t.grow}</h3><ul>${low.map(w=>`<li>${w.prob} <span class="note">· ${w.s}</span></li>`).join('')}</ul></div>
+   </div>
+   <div class="card"><h3>${t.plan}</h3><ol class="plan">${plan.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>
+     <p class="note" style="margin:0">${t.tierNote[ti]}</p>
+     <div class="row"><button class="btn brass" id="dl" hidden>${t.dl}</button><button class="btn ghost" id="copy">${t.copy}</button><span class="note" id="copied" aria-live="polite"></span></div></div>
+  </div>`;
+  $('#back').onclick=()=>{cur=null;render()};
+  (async()=>{
+    let dls=null;
+    dls={save:async({filename,data})=>{const u=URL.createObjectURL(data);const a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);return {status:'saved'};}};
+    const b=$('#dl'); if(!b) return; b.hidden=false;
+    b.onclick=async()=>{
+      b.disabled=true; $('#copied').textContent=t.preparing;
+      try{
+        const blob=await certPNG({title,name:S.name,tier:tier[1],idx,date,top:top.map(w=>w.name),low:low.map(w=>w.prob)});
+        const safe=S.name.replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'')||'me';
+        await dls.save({filename:`ready-to-marry-certificate-${safe}.png`,data:blob});
+        $('#copied').textContent=t.saved;
+      }catch(e){
+        $('#copied').textContent=e&&e.code==='declined'?t.cancelled:t.unavail;
+      }
+      b.disabled=false;
+    };
+  })();
+  $('#copy').onclick=()=>{
+    const txt=t.summary(title,S.name,idx,tier[1],top.map(w=>w.name).join(S.lang==='ar'?'، ':', '),low.map(w=>w.prob).join(S.lang==='ar'?'، ':', '));
+    const ok=()=>$('#copied').textContent=t.copied;
+    try{navigator.clipboard.writeText(txt).then(ok,()=>{$('#copied').textContent=txt})}catch(e){$('#copied').textContent=txt}
+  };
+}
+
+async function certPNG(d){
+  const t=L(), rtl=S.lang==='ar';
+  const disp=rtl?'Amiri, "Traditional Arabic", serif':'Marcellus, Georgia, serif';
+  const body=rtl?'"IBM Plex Sans Arabic", Tahoma, sans-serif':'Figtree, sans-serif';
+  try{await Promise.all(['64px Marcellus','700 46px Amiri','64px Amiri','600 22px Figtree','24px Figtree','24px "IBM Plex Sans Arabic"','700 26px "IBM Plex Sans Arabic"'].map(f=>document.fonts.load(f,'Aa ش')))}catch(e){}
+  const W=1600,H=1130,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const paper='#fbfcfa',ink='#18213a',muted='#566077',brass='#a3701c',brassSoft='#f3e7cf',lapis='#27408b';
+  const sp=v=>{try{g.letterSpacing=v}catch(e){}};
+  g.fillStyle=paper;g.fillRect(0,0,W,H);
+  g.strokeStyle=brass;g.lineWidth=6;g.strokeRect(40,40,W-80,H-80);
+  g.lineWidth=2;g.strokeRect(62,62,W-124,H-124);
+  const star=(x,y,r,fill)=>{g.save();g.translate(x,y);g.fillStyle=fill;[0,Math.PI/4].forEach(a=>{g.save();g.rotate(a);g.fillRect(-r,-r,2*r,2*r);g.restore()});g.restore()};
+  [[62,62],[W-62,62],[62,H-62],[W-62,H-62]].forEach(([x,y])=>star(x,y,14,brass));
+  star(W/2,150,34,brass);star(W/2,150,17,paper);
+  g.textAlign='center';g.textBaseline='alphabetic';
+  const dirOf=s=>/[؀-ۿ]/.test(s)?'rtl':'ltr';
+  const txt=(s,x,y)=>{try{g.direction=dirOf(s)}catch(e){} g.fillText(s,x,y)};
+  g.fillStyle=brass;g.font='700 46px Amiri, "Traditional Arabic", serif';txt('شهادة الاستعداد للزواج',W/2,250);
+  sp('6px');g.font='600 22px Figtree, sans-serif';txt('CERTIFICATE OF READINESS',W/2,300);sp('0px');
+  g.fillStyle=ink;g.font=`${rtl?'700 ':''}76px ${disp}`;txt(d.title,W/2,400);
+  g.fillStyle=muted;g.font=`24px ${body}`;txt(t.cCert,W/2,462);
+  g.fillStyle=lapis;g.font=`${dirOf(d.name)==='rtl'?'700 64px Amiri, serif':'64px Marcellus, Georgia, serif'}`;txt(d.name,W/2,545);
+  g.strokeStyle=brass;g.lineWidth=1.5;g.beginPath();g.moveTo(W/2-300,572);g.lineTo(W/2+300,572);g.stroke();
+  g.fillStyle=ink;g.font=`26px ${body}`;txt(t.cDone(N,S.track),W/2,625);
+  const pill=t.cPill(d.tier,d.idx);g.font=`700 26px ${body}`;
+  const pw=g.measureText(pill).width+64;g.fillStyle=brassSoft;
+  if(g.roundRect){g.beginPath();g.roundRect(W/2-pw/2,660,pw,56,28);g.fill()}else g.fillRect(W/2-pw/2,660,pw,56);
+  g.fillStyle=brass;txt(pill,W/2,698);
+  const col=(x,head,items)=>{if(!rtl)sp('3px');g.fillStyle=brass;g.font=`700 20px ${body}`;txt(head,x,800);sp('0px');
+    g.fillStyle=ink;g.font=`24px ${body}`;items.forEach((s,k)=>txt(s,x,845+k*40));};
+  const xs=rtl?[W/2+340,W/2-340]:[W/2-340,W/2+340];
+  col(xs[0],t.cTopS,d.top);col(xs[1],t.cGrow,d.low);
+  g.strokeStyle='#d3d9d2';g.lineWidth=1;g.beginPath();g.moveTo(W/2,785);g.lineTo(W/2,935);g.stroke();
+  g.fillStyle=muted;g.font=`22px ${body}`;txt(d.date,W/2,H-125);
+  g.font=`18px ${body}`;txt(t.cFoot,W/2,H-92);
+  return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('render')),'image/png'));
+}
+
+render();
+</script>
+</body>
+</html>

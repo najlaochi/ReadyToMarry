@@ -44,8 +44,21 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* header */
 header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-header.bar .wrap{display:flex;align-items:center;gap:12px;padding-block:10px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;margin-inline-end:auto;min-width:0}
+header.bar .wrap.hb{display:flex;align-items:center;gap:10px;padding-block:10px}
+.hb .brand{margin-inline-end:auto}
+.hnav{display:flex;align-items:center;gap:2px;flex-wrap:nowrap}
+.hnav .langbtn{margin-inline-start:6px}
+.hb .brand,.hb .brand>div{min-width:0}
+.hb .brand b{display:block;overflow:hidden;text-overflow:ellipsis}
+:root[dir=rtl] .navlink.out svg{transform:scaleX(-1)}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.navlink svg{display:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.navlink{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:0;background:transparent;color:var(--muted);font-weight:600;font-size:.9rem;padding:6px 12px;border-radius:999px}
+.navlink:hover{background:var(--sunk);color:var(--ink)}
+.logo{width:40px;height:40px;flex:none}
+#contact{scroll-margin-top:80px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.hb .brand>div{text-align:start}
 .star8{width:34px;height:34px;flex:none;background:var(--brass);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat}
@@ -97,9 +110,9 @@ input[type=text],input:not([type]),textarea{width:100%;padding:12px 14px;border:
 .world:hover:not(:disabled){transform:translateY(-2px);border-color:var(--lapis)}
 .world:disabled{opacity:.5;cursor:not-allowed}
 .world .num{grid-row:span 3;position:relative;font-family:var(--display);font-weight:700;font-size:1.3rem;font-variant-numeric:lining-nums tabular-nums;color:var(--brass);width:48px;height:48px;display:grid;place-items:center;line-height:1;isolation:isolate}
-.world .num::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--brass-soft);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat}
+.world .num::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:50%;background:var(--brass-soft);border:2px solid color-mix(in srgb,var(--brass) 70%,transparent);box-shadow:inset 0 0 0 3px var(--brass-soft),inset 0 0 0 4px color-mix(in srgb,var(--brass) 45%,transparent)}
 .world:has(.tag.pass) .num{color:var(--surface)}
-.world:has(.tag.pass) .num::before{background:var(--brass)}
+.world:has(.tag.pass) .num::before{background:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--brass),inset 0 0 0 4px color-mix(in srgb,var(--surface) 60%,transparent)}
 .world h3{font-size:1.28rem;line-height:1.15}
 .world .prob{color:var(--muted);font-size:.84rem}
 .world .meta{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;font-variant-numeric:tabular-nums}
@@ -174,7 +187,13 @@ ol.plan{margin:0;padding-inline-start:20px}
 .langbtn[lang=en]{font-family:var(--body)}
 .langbtn.out{color:var(--muted)}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
-.btn.exit{position:sticky;top:8px;z-index:5;align-self:flex-end;background:var(--bad);color:#fff;border-color:var(--bad)}
+.howto summary{cursor:pointer;color:var(--muted);font-size:.85rem;width:max-content}
+.howto p{margin:6px 0 0;max-width:62ch}
+.foot{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+.foot .wrap{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-block:18px 28px}
+.foot a,.mail{color:var(--lapis)}
+.mail{font-weight:600;user-select:all;word-break:break-all}
+.btn.exit{position:fixed;z-index:20;bottom:calc(16px + env(safe-area-inset-bottom,0px));inset-inline-end:max(16px,env(safe-area-inset-right,0px));background:var(--bad);color:#fff;box-shadow:var(--shadow)}
 .cid b{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;user-select:all}
 .tab{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;font-weight:600;color:var(--muted)}
 .tab[aria-pressed=true]{background:var(--lapis);color:var(--surface);border-color:var(--lapis)}
@@ -219,6 +238,15 @@ ul.books{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;g
 
 @media (max-width:560px){
   .tracks,.finale,.cols{grid-template-columns:1fr}
+  .brand b{font-size:1.12rem;white-space:nowrap}
+  .logo{width:34px;height:34px}
+  .hb .brand{gap:7px}
+  .hb{gap:6px}
+  .navlink{padding:7px}
+  .navlink svg{display:block}
+  .navlink svg+span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .hnav .langbtn{margin-inline-start:2px}
+  :root[dir=rtl] .brand b{font-size:1.2rem}
   .langbtn{padding:4px 10px}
   .scale button{font-size:.7rem;padding:8px 2px}
   .bigscore{font-size:2.8rem}
@@ -227,11 +255,12 @@ ul.books{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;g
 </style>
 </head>
 <body>
-<header class="bar"><div class="wrap">
-  <div class="brand"><div class="star8" aria-hidden="true"></div><div><b id="brandName">Ready to Marry</b><small id="who">Muslim marriage preparation</small></div></div>
-  <div class="stats" id="stats"></div>
+<header class="bar"><div class="wrap hb">
+  <div class="brand"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="var(--brass-soft)" stroke="var(--brass)" stroke-width="2.4"/><circle cx="32" cy="32" r="24.5" fill="none" stroke="var(--brass)" stroke-width="1" opacity=".55"/><g fill="none" stroke="var(--lapis)" stroke-width="3"><circle cx="26.5" cy="33.5" r="9.5"/><circle cx="37.5" cy="33.5" r="9.5"/></g><path d="M37.5 19.2l1.7 2.3-1.7 2.3-1.7-2.3z" fill="var(--brass)"/></svg><div><b id="brandName">Ready to Marry</b><small id="who" class="vh">Muslim marriage preparation</small></div></div>
+  <nav class="hnav" id="stats"></nav>
 </div></header>
 <main class="wrap" id="app"></main>
+<footer class="foot"><div class="wrap" id="foot"></div></footer>
 
 <script>
 const AR = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19'];
@@ -557,7 +586,7 @@ const BOSS_EN = [
 ];
 
 const WORLDS_AR = [
- {name:'نظيف ومنعش', prob:'النظافة والترتيب',
+ {name:'النظافة والترتيب', prob:'العناية بالنفس والبيت',
   mirror:[['أترك الحمام نظيفاً وجافاً بعد استخدامه.',5],['أترك المناديل المستعملة أو الأكواب أو الملابس حيث استخدمتها.',1],['أنظّف أسناني قبل النوم كل ليلة.',5]],
   learn:[
    {q:'بعد استخدام الحمام، العادة الصحيحة:',o:['تركه لعاملة التنظيف','الشطف، ومسح المقعد والأرض، وإنزال الغطاء، وغسل اليدين، وإعادة المنشفة مكانها','الشطف فقط'],a:1,e:'اترك كل مكان نظيفاً كما وجدته أو أنظف، فمن يستخدمه بعدك هو من تحب.'},
@@ -570,7 +599,7 @@ const WORLDS_AR = [
   missionOpts:['اترك الحمام نظيفاً تماماً بعد كل استخدام.','نظّف أسنانك (أو استعمل السواك) كل ليلة قبل النوم.','رتّب غرفة النوم 5 دقائق كل مساء: ترتيب، وسلة، وهواء نقي، ورائحة طيبة.','لا تترك أثراً خلفك: لا مناديل ولا أكواب ولا ملابس متروكة في أي مكان.','ابتسم لعائلتك كل صباح: «تبسّمك في وجه أخيك صدقة».'],
   hus:'إنزال المقعد والغطاء، وتجفيف الأرض، وتنظيف شعر اللحية من المغسلة.', wif:'تنظيف الشعر من المصرف والمغسلة، وإعادة المستحضرات مكانها، وغرفة نوم منعشة.'},
 
- {name:'الإيمان في البيت', prob:'الأركان والكلمة الطيبة والغضب',
+ {name:'الإيمان والاستقامة', prob:'الأركان والكلمة الطيبة والغضب',
   mirrorH:[['أصلي الصلوات الخمس في وقتها، حتى في العمل أو السفر.',5],['أكذب أحياناً كذبات صغيرة لأتجنب الخلاف.',1],['أريد أن أكون قدوة لبيتي في الصلاة وحسن الخلق.',5]],
   mirrorW:[['أصلي الصلوات الخمس في وقتها، حتى في العمل أو السفر.',5],['أكذب أحياناً كذبات صغيرة لأتجنب الخلاف.',1],['أنقل ما قاله شخص عن آخر.',1]],
   learn:[
@@ -610,7 +639,7 @@ const WORLDS_AR = [
   missionOptsW:['أسبوع كامل دون رفع صوتك مرة واحدة.','أسبوع بلا غيبة: غيّري الموضوع كلما بدأت.','اشكري عائلتك على 3 أشياء كل يوم.','قدّمي لفتة لطيفة لأهل خطيبك: اتصال، أو طبق، أو هدية صغيرة.','ابدئي كل يوم بكلمة إيجابية.'],
   hus:'كلام طيب، وبلا صراخ، وهدايا، ومساعدة في البيت، ومالها لها، ووفاء تام.', wif:'صوت هادئ، ولسان نظيف، واحترام دافئ لأهله، وشكر لجهده.'},
 
- {name:'قلعة الإصغاء', prob:'ضعف التواصل',
+ {name:'التواصل', prob:'ضعف التواصل',
   mirror:[['عندما يشتكي شريكي، أقاطعه لأدافع عن نفسي.',1],['أستطيع أن أعيد ما قاله الآخر قبل أن أرد.',5],['عندما أنزعج، أرفع صوتي.',1]],
   learn:[
    {q:'ماذا تعني طريقة «اسمع، أعِد، تفهَّم»؟',o:['اسمع، رُدّ، تحقّق','اسمع، أعِد ما سمعته، تفهَّم الشعور','انظر، استجب، قدِّر'],a:1,e:'اسمع دون مقاطعة، أعِد ما سمعته، ثم بيّن أنك تفهم الشعور. بعدها فقط ترد.'},
@@ -647,7 +676,7 @@ const WORLDS_AR = [
   mission:'اكتب صفحة واحدة: «شريك حياتي المثالي» في جهة، و«شروطي التي لا أتنازل عنها» في الجهة الأخرى.',
   hus:'أضف نوع الزوجة التي تستطيع دعمها فعلاً: عاملة، أو طالبة، أو في البيت.', wif:'أضيفي نوع الزوج الذي تستطيعين احترامه طويلاً، بعيداً عن الدخل.'},
 
- {name:'الدرع الرقمي', prob:'الهاتف ووسائل التواصل والخيانة',
+ {name:'وسائل التواصل', prob:'الهاتف والخصوصية والخيانة',
   mirror:[['لا أمانع أن يقرأ شريك حياتي محادثاتي.',5],['أستخدم هاتفي أثناء الوجبات.',1],['أقارن حياتي بحياة الأزواج على إنستغرام.',1]],
   learn:[
    {q:'اختبار «هل سيرتاح شريكي لو رأى هذا؟» يُطبَّق:',o:['على الرسائل العاطفية فقط','قبل إرسال أي رسالة إلى الجنس الآخر','أبداً، الخصوصية مطلقة'],a:1,e:'معظم الخيانات تبدأ بمحادثات «بريئة». هذا الاختبار يكشفها مبكراً.'},
@@ -659,7 +688,7 @@ const WORLDS_AR = [
   mission:'راقب وقت استخدامك للشاشة 3 أيام، ثم قلّله 30 دقيقة يومياً.',
   hus:'اكتم مجموعات الدردشة بعد العاشرة مساءً.', wif:'اكتمي مجموعات الدردشة بعد العاشرة مساءً.'},
 
- {name:'الخزينة', prob:'المال وفقدان العمل',
+ {name:'المعاملات المالية', prob:'المال وفقدان العمل',
   mirror:[['أعرف بالضبط ما عليّ من ديون (قروض، بطاقات).',5],['قد أخفي ديناً عن خطيبي أو خطيبتي.',1],['لدي مدخرات للطوارئ.',5]],
   learn:[
    {q:'في الإسلام، راتب الزوجة العاملة:',o:['ملك للبيت','ملك لها، وأي مساهمة منها تطوّع','يذهب إلى الزوج'],a:1,e:'تبقى النفقة واجب الزوج، ومساهمة الزوجة هدية أو قرض متفق عليه.'},
@@ -1354,7 +1383,8 @@ const T = {
   quickExit:'Quick exit',backupH:'Back up or move my progress',backupNote:'Copy this code and keep it somewhere safe (notes or email to yourself). Paste it on a new phone or browser to restore everything.',restore:'Restore',restorePh:'Paste a backup code here',restoreOk:'Progress restored.',restoreBad:'This backup code is not valid.',
   verifyH:'Verify a certificate',verifyNote:'Enter the name and ID exactly as printed on the certificate.',verifyName:'Name on certificate',verifyBtn:'Verify',
   verifyOk:(n,tr,i,d)=>`Valid: ${n}, ${tr} track, readiness index ${i}, issued ${d}.`,verifyBad:'Not valid: the name and ID do not match.',
-  tabMine:'My readiness',tabMatch:'Our match',tabSafety:'Help',helpBtn:'Help',
+  contactH:'Contact us',contactNote:'Questions, ideas or feedback about the app? Write to us. We read every message.',contactMsg:'Your message',contactPh:'Write your message here',contactSend:'Send by email',contactSubj:'Ready to Marry: message',footContact:'Contact us',
+  howtoH:'How scoring works',tabMine:'My readiness',tabMatch:'Our match',tabSafety:'Help',helpBtn:'Help',
   matchIntroH:'Our match: compare your expectations',
   matchIntro:'Answer 29 short questions alone, on your own phone. There are no right answers. Then exchange codes with your partner to see where you agree, what to talk about, and where the serious gaps are.',
   matchPrivacy:'Only these 29 answers are shared through the code. Your module scores and self-checks stay private.',
@@ -1420,7 +1450,8 @@ const T = {
   quickExit:'خروج سريع',backupH:'نسخ احتياطي أو نقل تقدّمي',backupNote:'انسخ هذا الرمز واحفظه في مكان آمن (الملاحظات أو بريدك). ألصقه على هاتف أو متصفح جديد لاستعادة كل شيء.',restore:'استعادة',restorePh:'ألصق رمز النسخة الاحتياطية هنا',restoreOk:'تمت استعادة التقدّم.',restoreBad:'رمز النسخة الاحتياطية غير صالح.',
   verifyH:'التحقق من شهادة',verifyNote:'أدخل الاسم والرقم تماماً كما في الشهادة.',verifyName:'الاسم في الشهادة',verifyBtn:'تحقّق',
   verifyOk:(n,tr,i,d)=>`صالحة: ${n}، مسار ${tr}، مؤشر الاستعداد ${i}، صدرت في ${d}.`,verifyBad:'غير صالحة: الاسم والرقم غير متطابقين.',
-  tabMine:'استعدادي',tabMatch:'توافقنا',tabSafety:'مساعدة',helpBtn:'مساعدة',
+  contactH:'تواصل معنا',contactNote:'أسئلة أو أفكار أو ملاحظات عن التطبيق؟ اكتب لنا، فنحن نقرأ كل رسالة.',contactMsg:'رسالتك',contactPh:'اكتب رسالتك هنا',contactSend:'إرسال بالبريد',contactSubj:'جاهزون للزواج: رسالة',footContact:'تواصل معنا',
+  howtoH:'طريقة احتساب النقاط',tabMine:'استعدادي',tabMatch:'توافقنا',tabSafety:'مساعدة',helpBtn:'مساعدة',
   matchIntroH:'توافقنا: قارنا توقعاتكما',
   matchIntro:'أجب عن 29 سؤالاً قصيراً وحدك على هاتفك. لا توجد إجابات صحيحة. ثم تبادلا الرمز لتعرفا أين تتفقان، وما يحتاج إلى حديث، وأين الفجوات الكبيرة.',
   matchPrivacy:'تُشارَك هذه الإجابات الـ29 فقط عبر الرمز، أما نتائج الوحدات وإجابات المرآة فتبقى خاصة.',
@@ -1469,6 +1500,7 @@ const T = {
 };
 
 T.arW = {
+  contactNote:'أسئلة أو أفكار أو ملاحظات عن التطبيق؟ اكتبي لنا، فنحن نقرأ كل رسالة.',contactPh:'اكتبي رسالتك هنا',
   backupNote:'انسخي هذا الرمز واحفظيه في مكان آمن (الملاحظات أو بريدك). ألصقيه على هاتف أو متصفح جديد لاستعادة كل شيء.',verifyNote:'أدخلي الاسم والرقم تماماً كما في الشهادة.',
   matchIntro:'أجيبي عن 29 سؤالاً قصيراً وحدك على هاتفك. لا توجد إجابات صحيحة. ثم تبادلا الرمز لتعرفا أين تتفقان، وما يحتاج إلى حديث، وأين الفجوات الكبيرة.',
   matchStart:'ابدئي',codeNote:'أرسلي هذا الرمز إلى خطيبك (واتساب أو رسالة أو بريد)، واطلبي رمزه.',partnerH:'رمز خطيبك',partnerPh:'ألصقي الرمز هنا',compare:'قارني',
@@ -1543,16 +1575,14 @@ function header(){
   $('#brandName').textContent=t.brand;
   $('#who').textContent = S.name ? `${S.name} · ${t.trackOf(t.role[S.track])}` : t.sub;
   const idx=readiness();
-  $('#stats').innerHTML = (S.track ? `
-    <span class="chip brass">★ ${totalStars()}/${NC*3}</span>
-    <span class="chip">${t.statWorlds(doneCount(),NC)}</span>
-    <span class="chip lapis">${t.statIdx} ${idx??'–'}</span>` : '') +
-    `<button class="langbtn" id="langBtn" lang="${S.lang==='ar'?'en':'ar'}">${t.langBtn}</button>` +
-    `<button class="langbtn" id="helpBtn">${t.helpBtn}</button>` +
-    (S.track ? `<button class="langbtn out" id="outBtn">${t.signOut}</button>` : '');
+  $('#stats').innerHTML = `<button class="navlink" id="contactBtn" aria-label="${t.contactH}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg><span>${t.contactH}</span></button><button class="navlink" id="helpBtn" aria-label="${t.helpBtn}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17.2h.01"/></svg><span>${t.helpBtn}</span></button>` +
+    (S.track ? `<button class="navlink out" id="outBtn" aria-label="${t.signOut}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg><span>${t.signOut}</span></button>` : '') +
+    `<button class="langbtn" id="langBtn" lang="${S.lang==='ar'?'en':'ar'}">${t.langBtn}</button>`;
   $('#langBtn').onclick=()=>setLang(S.lang==='ar'?'en':'ar');
   if($('#outBtn')) $('#outBtn').onclick=signOut;
   $('#helpBtn').onclick=()=>{cur={type:'safety'};render();scrollTo(0,0)};
+  $('#contactBtn').onclick=()=>{cur={type:'safety'};render();const c=$('#contact');if(c){c.scrollIntoView({block:'start'});setTimeout(()=>{const m=$('#cMsg');if(m)m.focus({preventScroll:true})},50);}};
+  $('#foot').innerHTML=`<span>${t.footContact}: <a href="mailto:contact@readyto-marry.com" dir="ltr">contact@readyto-marry.com</a></span><span>© ${new Date().getFullYear()} readyto-marry.com</span>`;
 }
 
 /* ---------- screens ---------- */
@@ -1611,7 +1641,7 @@ function onboarding(){
 function mapGrid(preview){
   const t=L();
   return `<section class="stack">
-    <div class="sectionhead"><h2>${t.worldsTitle(NC)}</h2>${preview?`<span class="note">${t.unlockOne}</span>`:`<span class="note">${t.complete(doneCount(),NC)}</span>`}</div>
+    <div class="sectionhead">${preview?`<span class="note">${t.unlockOne}</span>`:`<span class="note">${t.complete(doneCount(),NC)}</span>`}</div>
     ${preview?'':`<div class="progress" aria-hidden="true"><i style="width:${doneCount()/NC*100}%"></i></div>`}
     <div class="map">${WL().map((w,i)=>{
       if(isOpt(i)) return '';
@@ -1636,8 +1666,7 @@ function mapView(){
   const t=L(), allDone=doneCount()===NC, idx=readiness();
   $('#app').innerHTML=`<div class="stack">
     ${tabs('mine')}
-    <div class="stack" style="gap:6px"><span class="eyebrow">${esc(t.ahlan(S.name))}</span>
-    <p class="lead">${t.howto}</p></div>
+    <span class="eyebrow">${esc(t.ahlan(S.name))}</span>
     ${mapGrid(false)}
     ${bonusGrid()}
     <section class="stack"><div class="sectionhead"><h2>${t.finale}</h2></div>
@@ -1645,6 +1674,7 @@ function mapView(){
       <button class="world" id="bossBtn" ${allDone?'':'disabled'}><span class="num">Y1</span><h3>${t.bossName}</h3><span class="prob">${t.bossDesc}</span><span class="meta">${S.boss?`<span class="tag pass">${t.played}</span>`:allDone?`<span class="tag next">${t.play}</span>`:`<span class="tag lock">${t.finishAll}</span>`}<span>${S.boss?S.boss.best+'/100':''}</span></span></button>
       <button class="world" id="certBtn" ${idx!==null?'':'disabled'}><span class="num">★</span><h3>${t.certName}</h3><span class="prob">${t.certDesc}</span><span class="meta">${idx!==null?`<span class="tag pass">${t.readyView}</span>`:`<span class="tag lock">${t.afterSim}</span>`}<span>${idx??''}</span></span></button>
      </div></section>
+    <details class="howto"><summary>${t.howtoH}</summary><p class="note">${t.howto}</p></details>
     <div class="confirm" id="resetBox"><button class="btn quiet" id="reset">${t.reset}</button></div>
   </div>`;
   document.querySelectorAll('.world[data-w]').forEach(b=>b.onclick=()=>startWorld(+b.dataset.w));
@@ -2095,6 +2125,10 @@ function safetyView(){
       <div class="row"><button class="btn ghost" id="bkCopy">${t.copyCode}</button><span class="note" id="bkMsg" aria-live="polite"></span></div>
       <textarea class="code" id="rs" rows="2" placeholder="${t.restorePh}"></textarea>
       <div class="row"><button class="btn" id="rsBtn">${t.restore}</button><span class="note" id="rsMsg" aria-live="polite"></span></div></div>`:''}
+    <div class="card" id="contact"><h3>${t.contactH}</h3><p class="note" style="margin:0">${t.contactNote}</p>
+      <div class="row"><b class="mail" dir="ltr">contact@readyto-marry.com</b><button class="btn ghost" id="mailCopy">${t.copyCode.replace(/code|الرمز/,'').trim()||'Copy'}</button><span class="note" id="mailMsg" aria-live="polite"></span></div>
+      <div class="field"><label for="cMsg">${t.contactMsg}</label><textarea id="cMsg" rows="4" placeholder="${t.contactPh}"></textarea></div>
+      <div class="row"><a class="btn" id="cSend" href="mailto:contact@readyto-marry.com" style="text-decoration:none">${t.contactSend}</a></div></div>
     <div class="card"><h3>${t.verifyH}</h3><p class="note" style="margin:0">${t.verifyNote}</p>
       <div class="field"><label for="vName">${t.verifyName}</label><input id="vName" autocomplete="off"></div>
       <div class="field"><label for="vId">${t.certIdLbl}</label><input id="vId" dir="ltr" autocomplete="off" placeholder="RTM-…"></div>
@@ -2102,6 +2136,9 @@ function safetyView(){
     <div class="card"><h3>${t.discH}</h3><p style="margin:0">${t.disc}</p></div>
   </div>`;
   $('#qexit').onclick=quickExit;
+  $('#mailCopy').onclick=()=>{try{navigator.clipboard.writeText('contact@readyto-marry.com').then(()=>$('#mailMsg').textContent='✓',()=>{})}catch(e){}};
+  const upMail=()=>{$('#cSend').href='mailto:contact@readyto-marry.com?subject='+encodeURIComponent(t.contactSubj)+'&body='+encodeURIComponent($('#cMsg').value)};
+  $('#cMsg').oninput=upMail; upMail();
   if($('#bkCopy')) $('#bkCopy').onclick=()=>{try{navigator.clipboard.writeText($('#bk').value).then(()=>$('#bkMsg').textContent='✓',()=>$('#bk').select())}catch(e){$('#bk').select()}};
   if($('#rsBtn')) $('#rsBtn').onclick=()=>{const X=restoreCode($('#rs').value); if(!X){$('#rsMsg').textContent=t.restoreBad;return;} S={...X,lang:S.lang}; save(); $('#rsMsg').textContent=t.restoreOk; setTimeout(()=>{cur=null;render();scrollTo(0,0)},700);};
   $('#vBtn').onclick=()=>{const r=verifyCert($('#vName').value,$('#vId').value), m=$('#vMsg');

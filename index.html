@@ -63,7 +63,7 @@ header.bar .wrap.hb{display:flex;align-items:center;gap:10px;padding-block:10px}
 .star8{width:34px;height:34px;flex:none;background:var(--brass);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l13 21 24-6-6 24 21 13-21 13 6 24-24-6-13 21-13-21-24 6 6-24L-2 50l21-13-6-24 24 6z'/%3E%3C/svg%3E") center/contain no-repeat}
-.brand b{font-family:var(--display);font-weight:700;font-size:1.4rem;color:var(--lapis);line-height:1.1}
+.brand b{font-family:var(--display);font-weight:600;font-size:1.22rem;letter-spacing:.02em;color:var(--lapis);line-height:1.1}
 .brand small{display:block;color:var(--muted);font-size:.82rem}
 .stats{display:flex;gap:8px;flex-wrap:wrap}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--sunk);font-size:.85rem;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -79,9 +79,9 @@ main{padding-block:24px 64px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
 .hero{display:grid;gap:16px;position:relative;overflow:hidden}
 .hero>*{position:relative}
-.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:230px;background:var(--brass);opacity:.16;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M28 6l6 9 10-3-3 10 9 6-9 6 3 10-10-3-6 9-6-9-10 3 3-10-9-6 9-6-3-10 10 3z'/%3E%3Ccircle cx='28' cy='28' r='5'/%3E%3C/g%3E%3C/svg%3E") 0 0/56px 56px repeat,linear-gradient(#000,transparent);-webkit-mask-composite:source-in;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M28 6l6 9 10-3-3 10 9 6-9 6 3 10-10-3-6 9-6-9-10 3 3-10-9-6 9-6-3-10 10 3z'/%3E%3Ccircle cx='28' cy='28' r='5'/%3E%3C/g%3E%3C/svg%3E") 0 0/56px 56px repeat,linear-gradient(#000,transparent);mask-composite:intersect;pointer-events:none}
-.hero h1{font-size:clamp(2.2rem,6vw,3.2rem);color:var(--ink);line-height:1.05}
-.ar{font-family:var(--script);color:var(--brass);font-size:clamp(1.6rem,4.5vw,2.1rem);direction:rtl;line-height:1.6}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:150px;background:var(--brass);opacity:.16;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M28 6l6 9 10-3-3 10 9 6-9 6 3 10-10-3-6 9-6-9-10 3 3-10-9-6 9-6-3-10 10 3z'/%3E%3Ccircle cx='28' cy='28' r='5'/%3E%3C/g%3E%3C/svg%3E") 0 0/56px 56px repeat,linear-gradient(#000,transparent);-webkit-mask-composite:source-in;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M28 6l6 9 10-3-3 10 9 6-9 6 3 10-10-3-6 9-6-9-10 3 3-10-9-6 9-6-3-10 10 3z'/%3E%3Ccircle cx='28' cy='28' r='5'/%3E%3C/g%3E%3C/svg%3E") 0 0/56px 56px repeat,linear-gradient(#000,transparent);mask-composite:intersect;pointer-events:none}
+.hero h1{font-size:clamp(1.6rem,4.6vw,2.1rem);font-weight:600;color:var(--ink);line-height:1.15;letter-spacing:.01em}
+.ar{font-family:var(--script);color:var(--brass);font-size:clamp(1.25rem,3.6vw,1.6rem);direction:rtl;line-height:1.6}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-weight:600;font-size:.92rem}
 input[type=text],input:not([type]),textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit}
@@ -232,7 +232,7 @@ ul.books{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;g
 :root[dir=rtl] h1,:root[dir=rtl] h2,:root[dir=rtl] h3,:root[dir=rtl] .brand b,:root[dir=rtl] .scenario,:root[dir=rtl] .cert .name{font-weight:700}
 :root[dir=rtl] .eyebrow,:root[dir=rtl] .tag,:root[dir=rtl] .steps div,:root[dir=rtl] .speaker,:root[dir=rtl] .brand small,:root[dir=rtl] .tier{letter-spacing:0;text-transform:none}
 :root[dir=rtl] .progress i{background:linear-gradient(270deg,var(--brass),var(--lapis))}
-:root[dir=rtl] .brand b{font-family:var(--script);font-size:1.5rem}
+:root[dir=rtl] .brand b{font-family:var(--script);font-size:1.3rem}
 :root[dir=rtl] body{line-height:1.75}
 .note{font-size:.85rem;color:var(--muted)}
 .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.9rem}
@@ -565,8 +565,8 @@ const WORLDS_EN = [
   missionOptsW:['Agree with your future husband on 5 parenting basics: timing, number, roles, discipline, screens.','Spend an afternoon helping with a niece, nephew or young relative.','Learn one calm-discipline technique and try it.','Read and reflect on Luqman\'s advice to his son (31:13–19).'],
   hus:'Share the nights, the school runs and the patience: children need an involved father.', wif:'Share the load, let him parent his way, and stay one team in front of the children.'}
 ];
-const N = WORLDS_EN.length;
-const CORE = WORLDS_EN.map((w,i)=>w.optional?-1:i).filter(i=>i>=0), NC = CORE.length;
+let N = WORLDS_EN.length;
+let CORE = WORLDS_EN.map((w,i)=>w.optional?-1:i).filter(i=>i>=0), NC = CORE.length;
 const isOpt = i=>!!(WORLDS_EN[i]&&WORLDS_EN[i].optional);
 const TK = ()=>S.track==='husband'?'H':'W';
 const tv = (w,i)=>{const k=TK(); const ov=((S.lang==='ar'?GEN_AR:GEN_EN)[i])||{}; const b={...w, mirror:w['mirror'+k]||w.mirror, learn:w['learn'+k]||w.learn, play:w['play'+k]||w.play, missionOpts:w['missionOpts'+k]||w.missionOpts}; return {...b, ...(ov.A||{}), ...(ov[k]||{})};};
@@ -1364,16 +1364,44 @@ GEN_AR[17]={W:{mission:'اختاري خطوة للعقد هذا الأسبوع:'
 SCI_EN.splice(17,0,['Ease over show',"A study of about 3,000 US married adults (Francis-Tan and Mialon, 2015) found that very expensive weddings were linked to a higher risk of divorce, while a wedding attended by many guests was linked to a lower one. The Prophet ﷺ said: \"The most blessed marriage is the one with the least burden\" (Ahmad). Spend on people and a stable start, not on show.",'Francis-Tan and Mialon, Economic Inquiry, 2015; UAE Federal Decree-Law 41 of 2024']);
 SCI_AR.splice(17,0,['اليسر لا المظاهر','وجدت دراسة شملت نحو 3,000 متزوج في أمريكا (فرانسيس-تان وميالون، 2015) أن حفلات الزفاف الباهظة جداً ارتبطت بخطر أعلى للطلاق، بينما ارتبط كثرة الحضور بخطر أقل. وقال النبي ﷺ: «أعظم النكاح بركة أيسره مؤونة» (رواه أحمد). أنفقا على الناس وعلى بداية مستقرة، لا على المظاهر.','فرانسيس-تان وميالون، 2015؛ المرسوم بقانون اتحادي رقم 41 لسنة 2024']);
 
+/* ===== v6: modules merged from 18 to 10 (+ bonus); duplicates removed ===== */
+(function(){
+  const SPEC=[{"en": ["Cleanliness & Grooming", "Hygiene, order and looking after yourself"], "ar": ["النظافة والترتيب", "العناية بالنفس والبيت"], "pr": 0, "sci": 0, "m": [[0, 0], [0, 1], [0, 4], [12, 0]], "l": [[0, 1], [0, 2], [12, 0], [12, 1]], "p": {"H": [[0, 0], [0, 1], [0, 2]], "W": [[0, 0], [0, 2], [12, 1]]}}, {"en": ["Faith & Integrity", "Prayer, honesty and good words"], "ar": ["الإيمان والاستقامة", "الصلاة والصدق والكلمة الطيبة"], "pr": 1, "sci": 1, "m": [[1, 0], [1, 1], [1, 2]], "l": [[1, 0], [1, 1], [1, 2], [1, 3]], "p": [[1, 0], [1, 3], [1, 5]]}, {"en": ["Character & Patience", "Anger, apology and self-control"], "ar": ["حسن الخلق والصبر", "الغضب والاعتذار وضبط النفس"], "pr": 11, "sci": 11, "m": [[2, 0], [1, 4], [11, 0], [11, 1]], "l": [[2, 0], [11, 0], [11, 1], [1, 4]], "p": [[1, 1], [1, 4], [11, 1]]}, {"en": ["Communication", "Listening, conflict and understanding each other"], "ar": ["التواصل", "الإصغاء والخلاف وفهم الآخر"], "pr": 3, "sci": 15, "m": [[3, 0], [3, 1], [15, 0], [15, 1]], "l": [[3, 0], [3, 1], [15, 0], [16, 0]], "p": {"H": [[3, 0], [15, 1], [16, 0]], "W": [[3, 0], [15, 1], [16, 1]]}}, {"en": ["The Right Choice", "Choosing well and showing your real self"], "ar": ["الاختيار الصحيح", "حسن الاختيار والظهور على حقيقتك"], "pr": 5, "sci": 5, "m": [[4, 1], [5, 0], [5, 1], [5, 2]], "l": [[4, 0], [4, 1], [5, 0], [5, 1]], "p": [[4, 0], [5, 0], [5, 1]]}, {"en": ["Social Media", "Phones, privacy and fidelity"], "ar": ["وسائل التواصل", "الهاتف والخصوصية والخيانة"], "pr": 6, "sci": 6, "m": [[6, 0], [6, 1], [6, 2]], "l": {"H": [[6, 0], [6, 1], [6, 2], [2, 2]], "W": [[6, 0], [6, 1], [6, 2]]}, "p": [[6, 0], [6, 1]]}, {"en": ["Money & Roles", "Budget, debt, salaries and ego"], "ar": ["المعاملات المالية", "الميزانية والدَّين والرواتب والكبرياء"], "pr": 7, "sci": 7, "m": [[7, 0], [7, 1], [8, 0], [8, 2]], "l": [[7, 0], [7, 1], [8, 0], [8, 1]], "p": [[7, 0], [8, 0], [8, 1]]}, {"en": ["Family & In-laws", "Boundaries and respect"], "ar": ["الأهل والأصهار", "الحدود والاحترام"], "pr": 9, "sci": 9, "m": [[9, 0], [9, 1], [9, 2]], "l": {"H": [[9, 0], [9, 1], [9, 2]], "W": [[9, 0], [9, 1], [9, 2], [2, 1]]}, "p": {"H": [[9, 0], [9, 1]], "W": [[9, 0], [9, 1], [2, 1]]}}, {"en": ["Home Life & Skills", "Chores, hosting, cooking and repairs"], "ar": ["البيت والمهارات", "تقاسم الأعمال والضيافة والطبخ والإصلاح"], "pr": 10, "sci": 10, "m": [[10, 1], [10, 2], [13, 2], [14, 1]], "l": [[10, 1], [10, 2], [13, 1], [14, 0]], "p": {"H": [[10, 0], [13, 0], [14, 0]], "W": [[10, 0], [13, 0], [14, 1]]}}, {"en": null, "ar": null, "pr": 17, "sci": 17, "m": [[17, 0], [17, 1], [17, 2], [17, 3]], "l": [[17, 0], [17, 1], [17, 2], [17, 3], [17, 4]], "p": [[17, 0], [17, 2], [17, 3]]}, {"en": null, "ar": null, "pr": 18, "sci": 18, "full": true}];
+  const OLD={en:WORLDS_EN.slice(),ar:WORLDS_AR.slice()}, OG={en:GEN_EN,ar:GEN_AR}, OS={en:SCI_EN.slice(),ar:SCI_AR.slice()};
+  const res=(lg,k,i)=>{const w=OLD[lg][i],ov=OG[lg][i]||{};const b={...w,mirror:w['mirror'+k]||w.mirror,learn:w['learn'+k]||w.learn,play:w['play'+k]||w.play,missionOpts:w['missionOpts'+k]||w.missionOpts};return {...b,...(ov.A||{}),...(ov[k]||{})};};
+  const pick=(lg,k,sp,f)=>{const L=Array.isArray(sp)?sp:sp[k];return L.map(([o,j])=>{const v=res(lg,k,o)[f][j];if(v===undefined)throw new Error('missing '+lg+k+f+o+':'+j);return v;});};
+  const KEEP=['mirror','learn','play','mission','missionOpts','musts','mustsH','hus','wif','name','prob','optional'];
+  for(const lg of ['en','ar']){
+    const NW=[],NG={};
+    SPEC.forEach((sp,ni)=>{
+      const per={};
+      for(const k of ['H','W']){
+        const r=res(lg,k,sp.pr), o={};
+        KEEP.forEach(f=>{if(r[f]!==undefined)o[f]=r[f]});
+        if(!sp.full){o.mirror=pick(lg,k,sp.m,'mirror');o.learn=pick(lg,k,sp.l,'learn');o.play=pick(lg,k,sp.p,'play');}
+        if(sp[lg]){o.name=sp[lg][0];o.prob=sp[lg][1];}
+        per[k]=o;
+      }
+      NW.push({...per.H});
+      NG[ni]={H:per.H,W:per.W};
+    });
+    const W=lg==='en'?WORLDS_EN:WORLDS_AR; W.length=0; NW.forEach(x=>W.push(x));
+    if(lg==='en') GEN_EN=NG; else GEN_AR=NG;
+    const SC=lg==='en'?SCI_EN:SCI_AR; SC.length=0; SPEC.forEach(sp=>SC.push(OS[lg][sp.sci]));
+  }
+  N=WORLDS_EN.length; CORE=WORLDS_EN.map((w,i)=>w.optional?-1:i).filter(i=>i>=0); NC=CORE.length;
+})();
+
 const T = {
  en:{dir:'ltr',brand:'Ready to Marry',sub:'Muslim marriage preparation',langBtn:'العربية',langName:'English',
   role:{husband:'Husband',wife:'Wife'},trackOf:r=>`${r} track`,
   statWorlds:(d,n)=>`${d}/${n} modules`,statIdx:'Index',
   chooseLang:'Language',
-  heroTitle:'Become a ready husband or a ready wife',
-  heroLead:'Eighteen modules, one for each problem that breaks marriages in our region, backed by marriage research and Islamic guidance, plus an optional parenting module: hygiene and order, faith at home, good character, communication, money, in-laws, phones, ego, housework, patience, grooming, home atmosphere, the marriage contract, and practical skills like cooking, sewing, and repairs. You play alone, score alone, and earn your own certificate. Every question is written for your track: husband or wife. Your answers stay on this device.',
+  heroTitle:'A test for a successful marriage',
+  heroLead:'Ten short modules on the issues that most often strain marriages in our region, built on marriage research and Islamic guidance, plus an optional parenting module: cleanliness and grooming, faith and integrity, character and patience, communication, the right choice, social media, money and roles, family and in-laws, home life and skills, and the marriage contract. You play alone, score alone and earn your own certificate, and engaged couples can compare their expectations in Our match. Every question is written for your track, husband or wife, and your answers stay on this device.',
   nameLabel:'Your first name',namePh:'e.g. Sara',chooseTrack:'Choose your track',
   trackH:['Husband track','Provider, protector, partner at home'],trackW:['Wife track','Partner, anchor, her rights and her role'],
-  start:'Start my journey',perWorld:'About 10 minutes per module.',
+  start:'Start my journey',perWorld:'About 5 minutes per module.',
   worldsTitle:n=>`The ${n} modules`,unlockOne:'Unlock one at a time',complete:(d,n)=>`${d} of ${n} complete`,
   locked:'Locked',passed:'Passed',replayTag:'Replay',play:'Play',
   ahlan:n=>`Ahlan, ${n}`,
@@ -1403,7 +1431,7 @@ const T = {
   safeForced:'Marriage needs your free consent. When Khansa bint Khidam was married against her will, the Prophet ﷺ annulled the marriage (al-Bukhari).',
   safeUrgent:'Please talk to someone you trust today, and use the contacts below. If you are in danger, call 999.',
   resH:'Help in the UAE',resNote:'Numbers from the official UAE government portal (u.ae). Outside the UAE, call your local emergency number.',
-  discH:'About this app',disc:'Ready to Marry is educational. It is not therapy, a medical service, legal advice or a fatwa. Check religious questions with a qualified scholar, and personal or mental-health concerns with a licensed professional.',
+  discH:'About us',disc:'Ready to Marry is educational. It is not therapy, a medical service, legal advice or a fatwa. Check religious questions with a qualified scholar, and personal or mental-health concerns with a licensed professional.',
   bonusH:'Bonus module (optional)',bonusNote:'Not required for your certificate. If you complete it, it is added as a badge.',bonusBadge:'Bonus',prev:'← Previous',change:'Change answer',review:'Review my answers',sciH:'Research corner',readH:'Further reading',books:[['John Gottman, The Seven Principles for Making Marriage Work','Hard data on conflict and communication.'],['Eli Finkel, The All-or-Nothing Marriage','How society and expectations shape marriage today.'],['Sue Johnson, Hold Me Tight','Emotional safety and vulnerability.'],['John Gray, Men Are from Mars, Women Are from Venus','Popular, easy read on common differences; take it as tendencies, not rules.']],booksNote:'Read them with our culture in mind: take the research, and keep the Islamic framework.',signOut:'Sign out',welcomeBack:'Welcome back',savedNote:'Profiles saved on this device. Tap yours to continue.',outNote:'Signed out. Your progress is saved on this device.',reset:'Reset all progress',eraseQ:'Erase all scores and start again?',keep:'Keep',erase:'Erase',
   back:'← Modules',worldLbl:(i,p)=>`Module ${i} · ${p}`,stages:['Mirror','Learn','Play','Mission'],
   mirrorH:'Mirror · be honest with yourself',mirrorNote:'There are no right answers here. Honest answers score full points; answers that look "too perfect" score less.',
@@ -1436,11 +1464,11 @@ const T = {
   role:{husband:'الزوج',wife:'الزوجة'},trackOf:r=>`مسار ${r}`,
   statWorlds:(d,n)=>`${d}/${n} وحدات`,statIdx:'المؤشر',
   chooseLang:'اللغة',
-  heroTitle:'كن زوجاً مستعداً، أو كوني زوجة مستعدة',
-  heroLead:'ثماني عشرة وحدة، وحدة لكل مشكلة تهدم الزواج في منطقتنا، مدعومة بأبحاث الزواج والتوجيه الإسلامي، مع وحدة اختيارية عن التربية: النظافة والترتيب، والإيمان في البيت، وحسن الخلق، والتواصل، والمال، والأهل، والهاتف، والكبرياء، وأعمال البيت، والصبر، والعناية بالنفس، وأجواء البيت، وعقد الزواج، ومهارات عملية كالطبخ والخياطة والإصلاح. تلعب وحدك، وتحصل على نتيجتك وحدك، وتنال شهادتك الخاصة. كل سؤال مكتوب لمسارك: زوجاً أو زوجة. إجاباتك تبقى على هذا الجهاز.',
+  heroTitle:'اختبار لزواج ناجح',
+  heroLead:'عشر وحدات قصيرة عن أكثر ما يُرهق الزواج في منطقتنا، مبنية على أبحاث الزواج والتوجيه الإسلامي، مع وحدة اختيارية عن التربية: النظافة والترتيب، والإيمان والاستقامة، وحسن الخلق والصبر، والتواصل، والاختيار الصحيح، ووسائل التواصل، والمعاملات المالية، والأهل والأصهار، والبيت والمهارات، وعقد الزواج. تلعب وحدك، وتحصل على نتيجتك وشهادتك، ويستطيع المخطوبان مقارنة توقعاتهما في «توافقنا». كل سؤال مكتوب لمسارك، زوجاً أو زوجة، وإجاباتك تبقى على هذا الجهاز.',
   nameLabel:'اسمك الأول',namePh:'مثال: سارة',chooseTrack:'اختر مسارك',
   trackH:['مسار الزوج','القوامة، والحماية، والشراكة في البيت'],trackW:['مسار الزوجة','الشراكة، والسكن، وحقوقها ودورها'],
-  start:'ابدأ رحلتي',perWorld:'نحو 10 دقائق لكل وحدة.',
+  start:'ابدأ رحلتي',perWorld:'نحو 5 دقائق لكل وحدة.',
   worldsTitle:n=>`الوحدات الـ${n}`,unlockOne:'تُفتح واحدة تلو الأخرى',complete:(d,n)=>`${d} من ${n} مكتملة`,
   locked:'مغلق',passed:'ناجح',replayTag:'أعد اللعب',play:'العب',
   ahlan:n=>`أهلاً، ${n}`,
@@ -1470,7 +1498,7 @@ const T = {
   safeForced:'الزواج يشترط رضاك الحر. وعندما زُوّجت خنساء بنت خِذام وهي كارهة، ردّ النبي ﷺ نكاحها (رواه البخاري).',
   safeUrgent:'تحدّث اليوم مع شخص تثق به، واستعمل الأرقام أدناه. وإن كنت في خطر فاتصل بـ 999.',
   resH:'المساعدة في الإمارات',resNote:'الأرقام من البوابة الرسمية لحكومة الإمارات (u.ae). خارج الإمارات، اتصل برقم الطوارئ المحلي.',
-  discH:'عن هذا التطبيق',disc:'«جاهزون للزواج» تطبيق تعليمي، وليس علاجاً نفسياً ولا خدمة طبية ولا استشارة قانونية ولا فتوى. يُرجع في المسائل الدينية إلى عالم مؤهل، وفي الأمور النفسية والشخصية إلى مختص مرخّص.',
+  discH:'من نحن',disc:'«جاهزون للزواج» تطبيق تعليمي، وليس علاجاً نفسياً ولا خدمة طبية ولا استشارة قانونية ولا فتوى. يُرجع في المسائل الدينية إلى عالم مؤهل، وفي الأمور النفسية والشخصية إلى مختص مرخّص.',
   bonusH:'وحدة إضافية (اختيارية)',bonusNote:'ليست شرطاً للحصول على الشهادة. إن أكملتها تُضاف إلى شهادتك كوسام.',bonusBadge:'وسام إضافي',prev:'→ السابق',change:'تغيير الإجابة',review:'مراجعة إجاباتي',sciH:'ركن الأبحاث',readH:'قراءات مقترحة',books:[['جون غوتمان، «المبادئ السبعة لإنجاح الزواج»','بيانات دقيقة عن الخلاف والتواصل.'],['إيلي فينكل، «الزواج: كل شيء أو لا شيء»','كيف تشكّل التوقعات والمجتمع الزواج اليوم.'],['سو جونسون، «احضنّي بقوة»','الأمان العاطفي والانفتاح على الشريك.'],['جون غراي، «الرجال من المريخ والنساء من الزهرة»','كتاب شائع وسهل عن الفروق الشائعة؛ خذه ميولاً لا قواعد.']],booksNote:'اقرأها بعين ثقافتنا: خذ من الأبحاث، وحافظ على الإطار الإسلامي.',signOut:'تسجيل الخروج',welcomeBack:'مرحباً بعودتك',savedNote:'ملفات محفوظة على هذا الجهاز. اختر ملفك للمتابعة.',outNote:'تم تسجيل الخروج. تقدّمك محفوظ على هذا الجهاز.',reset:'مسح كل التقدم',eraseQ:'مسح كل النتائج والبدء من جديد؟',keep:'إبقاء',erase:'مسح',
   back:'→ الوحدات',worldLbl:(i,p)=>`الوحدة ${i} · ${p}`,stages:['المرآة','تعلّم','العب','المهمة'],
   mirrorH:'المرآة · كن صادقاً مع نفسك',mirrorNote:'لا توجد إجابات صحيحة هنا. الإجابات الصادقة تنال الدرجة كاملة، والإجابات «المثالية أكثر من اللازم» تنال أقل.',
@@ -1525,11 +1553,12 @@ T.arW = {
 
 /* ---------- state ---------- */
 const KEY='ready-to-marry-v1';
-let S = load() || {name:'',track:'',worlds:{},boss:null,unlocked:0,v:5};
+let S = load() || {name:'',track:'',worlds:{},boss:null,unlocked:0,v:6};
 if(S.v===undefined){ if(S.track){const w={};for(const k in S.worlds)w[+k+1]=S.worlds[k];S.worlds=w;S.unlocked=(S.unlocked||0)+1;} S.v=2; }
 if(S.v===2){ if(S.track){const w={};for(const k in S.worlds){const n=+k;w[n>=1?n+1:n]=S.worlds[k];}S.worlds=w;if((S.unlocked||0)>=1)S.unlocked=S.unlocked+1;} S.v=3; }
 function migr4(X){ if(X.v===3){ if(X.track){const w={};for(const k in X.worlds){const n=+k;w[n>=1?n+1:n]=X.worlds[k];}X.worlds=w;if((X.unlocked||0)>=1)X.unlocked=X.unlocked+1;} X.v=4; }
   if(X.v===4){ if(X.worlds&&X.worlds[17]){X.worlds[18]=X.worlds[17];delete X.worlds[17];} if(X.drafts&&X.drafts[17]){X.drafts[18]=X.drafts[17];delete X.drafts[17];} if((X.unlocked||0)>16)X.unlocked=16; X.v=5; }
+  if(X.v===5){ const G=[[0, 12], [1], [2, 11], [3, 15, 16], [4, 5], [6], [7, 8], [9], [10, 13, 14], [17], [18]], o=X.worlds||{}, w={}; G.forEach((g,ni)=>{ if(g.every(i=>o[i])){ const b=Math.round(g.reduce((a,i)=>a+(o[i].best||0),0)/g.length); w[ni]={best:b,last:b,refl:g.map(i=>o[i].refl||'').filter(Boolean).join(' ')}; } }); X.worlds=w; X.drafts={}; let u=0; while(w[u])u++; X.unlocked=u; delete X.cert; X.v=6; }
   return X; }
 migr4(S); try{localStorage.setItem('ready-to-marry-v1',JSON.stringify(S))}catch(e){}
 if(!S.lang){ let nav=''; try{nav=(navigator.language||'').toLowerCase()}catch(e){} S.lang=nav.startsWith('ar')?'ar':'en'; }
@@ -1544,7 +1573,7 @@ function signOut(){
   const p=loadProfiles().filter(x=>!(x.name===S.name&&x.track===S.track));
   if(S.track) p.unshift({...S});
   saveProfiles(p);
-  S={name:'',track:'',worlds:{},boss:null,unlocked:0,v:5,lang:S.lang};
+  S={name:'',track:'',worlds:{},boss:null,unlocked:0,v:6,lang:S.lang};
   obDraft={track:'',name:''}; cur=null; outMsg=true; save(); render(); scrollTo(0,0);
 }
 function signIn(k){
@@ -1613,7 +1642,6 @@ function onboarding(){
    <section class="panel hero">
      <div class="ar">وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً</div>
      <h1>${t.heroTitle}</h1>
-     <p class="lead">${t.heroLead}</p>
      <div class="field"><label>${t.chooseLang}</label>
        <div class="langpick">
          <button class="track" id="l-en" aria-pressed="${S.lang==='en'}" lang="en"><b>English</b></button>
@@ -1683,10 +1711,10 @@ function mapView(){
   $('#bossBtn').onclick=()=>{cur={type:'boss',m:0,pts:0,picks:[]};render();scrollTo(0,0)};
   $('#certBtn').onclick=()=>{cur={type:'cert'};render();scrollTo(0,0)};
   $('#reset').onclick=()=>{$('#resetBox').innerHTML=`<span>${t.eraseQ}</span><button class="btn quiet" id="no">${t.keep}</button><button class="btn" id="yes" style="background:var(--bad)">${t.erase}</button>`;
-    $('#no').onclick=render;$('#yes').onclick=()=>{S={name:'',track:'',worlds:{},boss:null,unlocked:0,v:5,lang:S.lang};obDraft={track:'',name:''};save();cur=null;render()}};
+    $('#no').onclick=render;$('#yes').onclick=()=>{S={name:'',track:'',worlds:{},boss:null,unlocked:0,v:6,lang:S.lang};obDraft={track:'',name:''};save();cur=null;render()}};
 }
 
-function isOpen(i){return isOpt(i) || i===0 || i<=(S.unlocked||0) || !!S.worlds[i-1];}
+function isOpen(i){return isOpt(i) || i===0 || !!S.worlds[i] || i<=(S.unlocked||0) || !!S.worlds[i-1];}
 const ANS_KEYS=['stage','mirror','li','lans','lfirst','pi','pans','pfirst','orders','mpick','mscore','refl'];
 function pickAns(c){const o={};ANS_KEYS.forEach(k=>{if(c[k]!==undefined)o[k]=JSON.parse(JSON.stringify(c[k]))});return o;}
 function saveDraft(){ if(!cur||cur.type!=='world'||cur.stage>=4) return; S.drafts=S.drafts||{}; S.drafts[cur.w]=pickAns(cur); save(); }
@@ -2135,7 +2163,7 @@ function safetyView(){
       <div class="field"><label for="vName">${t.verifyName}</label><input id="vName" autocomplete="off"></div>
       <div class="field"><label for="vId">${t.certIdLbl}</label><input id="vId" dir="ltr" autocomplete="off" placeholder="RTM-…"></div>
       <div class="row"><button class="btn ghost" id="vBtn">${t.verifyBtn}</button></div><p id="vMsg" aria-live="polite" style="margin:0"></p></div>
-    <div class="card"><h3>${t.discH}</h3><p style="margin:0">${t.disc}</p></div>
+    <div class="card" id="about"><h3>${t.discH}</h3><p style="margin:0">${t.heroLead}</p><p class="note" style="margin:0">${t.disc}</p></div>
   </div>`;
   $('#qexit').onclick=quickExit;
   $('#mailCopy').onclick=()=>{try{navigator.clipboard.writeText('contact@readyto-marry.com').then(()=>$('#mailMsg').textContent='✓',()=>{})}catch(e){}};
